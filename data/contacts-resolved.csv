@@ -1,0 +1,71 @@
+name,title,role,organization,state,opportunity,email_published,email_verified,email_inferred,pattern,confidence,basis,pattern_check,expected_local,check_confidence,verification
+No named individual published,Program inbox,champion,"Idaho Dept. of Health and Welfare, RHTP",ID,Idaho School-Based Family Support Hubs,IdahoRHTP@dhw.idaho.gov,IdahoRHTP@dhw.idaho.gov,,,,,,,,3
+Amy Hirtle,"Director, State Office of Rural Health; Bureau of Rural Health and Community Support",champion,Idaho Dept. of Health and Welfare,ID,Idaho School-Based Family Support Hubs / RHTPHIS1,amy.hirtle@dhw.idaho.gov,,,,,,conforms,amy.hirtle,2.0,1
+Juliet Charron,Director,economic_buyer,Idaho Dept. of Health and Welfare,ID,Idaho School-Based Family Support Hubs / RHTPHIS1,juliet.charron@dhw.idaho.gov,,,,,,conforms,juliet.charron,2.0,1
+Alex Prado,Primary Care Office Manager; RHTP Point of Contact,champion,Idaho Dept. of Health and Welfare,ID,Idaho School-Based Family Support Hubs / RHTPHIS1,,,alex.prado@dhw.idaho.gov,first.last,2.0,4/2 confirmed addresses on dhw.idaho.gov,,,,1
+Steven Hoffman,No title published,unknown,"Missouri Dept. of Social Services, Rural Health Transformation Office",MO,Missouri RFI 0000000012SL,Steven.Hoffman@dss.mo.gov,Steven.Hoffman@dss.mo.gov,,,,,,,,3
+No named individual published,Program inbox,champion,Missouri DSS Rural Health Transformation Office,MO,Missouri RFI 0000000012SL,DSS.RHTP@dss.mo.gov,DSS.RHTP@dss.mo.gov,,,,,,,,3
+Joe Miller,"Director, Rural Health Transformation Office",champion,Missouri DSS Rural Health Transformation Office,MO,Missouri RFI 0000000012SL,joe.miller@mo.gov,,,,,,conforms,joe.miller,1.333,1
+Jessica Bax,RHT Program,unknown,Missouri Dept. of Social Services,MO,Missouri RFI 0000000012SL,jessica.bax@dss.mo.gov,,,,,,conforms,jessica.bax,2.0,1
+Baylee Watts,No title on record,unknown,Missouri Dept. of Social Services,MO,Missouri RFI 0000000012SL,baylee.watts@dss.mo.gov,,,,,,conforms,baylee.watts,2.0,1
+Amy Raymo,"Assistant Director, Division of Purchasing",economic_buyer,Missouri Office of Administration,MO,Missouri RFI 0000000012SL,amy.raymo@oa.mo.gov,,,,,,conforms,amy.raymo,1.333,1
+No named individual published,Program inbox,champion,"Kentucky Cabinet for Health and Family Services, Rural Health Transformation Team",KY,Kentucky subaward cohort,ruralhealthplan@ky.gov,ruralhealthplan@ky.gov,,,,,,,,3
+Ashleyn Gibson,No title published,unknown,Kentucky Cabinet for Health and Family Services,KY,Kentucky Community Health Worker RFA — closed 2026-08-05,ashleyn.gibson@ky.gov,ashleyn.gibson@ky.gov,,,,,,,,3
+Andrew Yunt,"Deputy Commissioner, CHFS; Project Director and Authorized Official, RHTP award RHTCMS332079",economic_buyer,Kentucky Cabinet for Health and Family Services,KY,Kentucky subaward cohort,andrew.yunt@ky.gov,,,,,,conforms,andrew.yunt,2.0,1
+Tom Walton,"Director, Rural Health Transformation Program",champion,Kentucky Cabinet for Health and Family Services,KY,Kentucky subaward cohort,tom.walton@ky.gov,,,,,,conforms,tom.walton,2.0,1
+Dr. Steven Stack,Secretary,economic_buyer,Kentucky Cabinet for Health and Family Services,KY,Kentucky subaward cohort,steven.stack@ky.gov,,,,,,conforms,steven.stack,2.0,1
+Robbie Hume,Crisis to Care Interim Lead,champion,Kentucky Department for Public Health,KY,Kentucky subaward cohort,robbie.hume@ky.gov,,,,,,conforms,robbie.hume,2.0,1
+Jimmie Hampton,"Workforce Development Specialist, Crisis to Care",gatekeeper,Kentucky Department for Public Health,KY,Kentucky subaward cohort,jimmie.hampton@ky.gov,,,,,,conforms,jimmie.hampton,2.0,1
+Marsha Deaton,"Program Lead, Rooted in Health",champion,Kentucky Department for Public Health,KY,Kentucky subaward cohort,marsha.deaton@ky.gov,,,,,,conforms,marsha.deaton,2.0,1
+Pam Stein,RHTP Dental Hygiene RFA point of contact,champion,Kentucky Department for Public Health,KY,Kentucky subaward cohort,pam.stein@ky.gov,,,,,,conforms,pam.stein,2.0,1
+John Ard,Executive Director (office unconfirmed),economic_buyer,Commonwealth of Kentucky,KY,Kentucky subaward cohort,john.ard@ky.gov,,,,,,conforms,john.ard,2.0,1
+Philip Heleringer,Executive Director (office unconfirmed),economic_buyer,Commonwealth of Kentucky,KY,Kentucky subaward cohort,philip.heleringer@ky.gov,,,,,,conforms,philip.heleringer,2.0,1
+Charles Sowards,Assistant Chief Executive Officer,economic_buyer,UofL Health – Shelbyville Hospital,KY,Kentucky subaward cohort — University of Louisville affiliate,charles.sowards@uoflhealth.org,,,,,,conforms,charles.sowards,1.333,1
+No named individual published,Program inbox,champion,"Idaho Dept. of Health and Welfare, RHTP",ID,Idaho RHTPHIS1,IdahoRHTP@dhw.idaho.gov,IdahoRHTP@dhw.idaho.gov,,,,,,,,3
+Kyle Rooks,Government Affairs Director,gatekeeper,Idaho Community Health Centers Association,ID,Idaho RHTPHIS1,krooks@idahochc.org,,,,,,conforms,krooks,0.333,1
+Toni Lawson,VP of Government Relations,gatekeeper,Idaho Hospital Association,ID,Idaho RHTPHIS1,tlawson@teamiha.org,,,,,,conforms,tlawson,0.333,1
+Brian Whitlock,President and CEO,economic_buyer,Idaho Hospital Association,ID,Idaho RHTPHIS1,,,,,,,,,,1
+Katrina Hoff,"Director, Southwest Idaho AHEC",economic_buyer,Jannus,ID,Idaho RHTPHIS1,khoff@jannus.org,,,,,,conforms,khoff,0.333,1
+Mark Laney,CEO,economic_buyer,Mosaic Life Care,MO,MO Hub 1–2,mark.laney@mymlc.com,,,,,,conforms,mark.laney,2.0,1
+Karan Mohan,Chief Quality Officer,champion,Mosaic Life Care,MO,MO Hub 1–2,karan.mohan@mymlc.com,,,,,,conforms,karan.mohan,2.0,1
+Tina Gillespie,Chief Executive Officer,economic_buyer,Harrison County Community Hospital,MO,MO Hub 3,tgillespie@hcchospital.org,,,,,,conforms,tgillespie,0.667,1
+Nikki Hendren,Chief Operating Officer,champion,Harrison County Community Hospital,MO,MO Hub 3,nhendren@hcchospital.org,,,,,,conforms,nhendren,0.667,1
+Amanda Arnold,Chief Operating Officer,champion,HCC Network,MO,MO Hub 5,amanda.arnold@hccnetwork.org,,,,,,conforms,amanda.arnold,1.333,1
+Melissa Hunter,Chief Operating Officer / Chief Nursing Officer,champion,Lake Regional Health System,MO,MO Hub 12,mhunter@lakeregional.com,,,,,,conforms,mhunter,0.667,1
+Jaren Pippitt,Chief Strategy Officer,champion,Lake Regional Health System,MO,MO Hub 12,jpippitt@lakeregional.com,,,,,,conforms,jpippitt,0.667,1
+Gary Cloud,"Vice President, Strategic Partnerships",gatekeeper,A.T. Still University of Health Sciences – Kirksville,MO,MO Hub 16,gcloud@atsu.edu,,,,,,conforms,gcloud,0.333,1
+Wendy Harrington,Vice President of Development,gatekeeper,Hannibal Regional Health Center,MO,MO Hub 18,wendy.harrington@hannibalregional.org,,,,,,conforms,wendy.harrington,1.333,1
+Brock Lough,Chief Executive Officer,economic_buyer,Arthur Center Community Health,MO,MO Hub 19,blough@arthurcenter.com,,,,,,conforms,blough,1.0,1
+Kristen Fishback,Deputy Director,champion,Arthur Center Community Health,MO,MO Hub 19,kfishback@arthurcenter.com,,,,,,conforms,kfishback,1.0,1
+Ilda Guambe,Grants and Informatics Coordinator,champion,Arthur Center Community Health,MO,MO Hub 19,iguambe@arthurcenter.com,,,,,,conforms,iguambe,1.0,1
+Cindi Engemann,Chief Financial Officer,economic_buyer,Hermann Area District Hospital,MO,MO Hub 21,cengemann@hadh.org,,,,,,conforms,cengemann,0.333,1
+Jana Cook,Chief Operating Officer,champion,Phelps Health,MO,MO Hub 22,cookj@phelpshealth.org,,,,,,conforms,cookj,0.333,1
+Crystal Slayton,MCO Outreach Coordinator,champion,Missouri Highlands Health Care,MO,MO Hub 24,cslayton@mohigh.org,,,,,,conforms,cslayton,0.333,1
+Lisa Tolbert,Chief Operations Officer,unknown,Community Counseling Center,MO,MO Hub 25,ltolbert@cccntr.com,,,,,,conforms,ltolbert,0.333,1
+Nadia Moreno,Program Director,champion,FCC Behavioral Health,MO,MO Hub 26,nadia.moreno@fccinc.org,,,,,,conforms,nadia.moreno,0.667,1
+Seth Roso,Chief Administrative Officer,champion,FCC Behavioral Health,MO,MO Hub 26,sethr@fccinc.org,,,,,,deviates,seth.roso,0.667,1
+Brandon Rivenbark,"Rural Hospital Program Manager, Virginia Department of Health",champion,Virginia Department of Health,VA,VA Innovative Maternal Care (VDH-26-705-0387),brandon.rivenbark@vdh.virginia.gov,brandon.rivenbark@vdh.virginia.gov,,,,,,,,3
+Michael Parsons,"Director of Programs, Virginia Foundation for Healthy Youth",economic_buyer,Virginia Foundation for Healthy Youth,VA,"VA Live Well, Together — Consumer Technology",Michael.Parsons@healthyyouthva.org,Michael.Parsons@healthyyouthva.org,,,,,,,,3
+Ben Barber,"Chief Rural Health Officer, Virginia Health Care Foundation",unknown,Virginia Health Care Foundation,VA,VA CareIQ Provider Productivity,ben@vhcf.org,ben@vhcf.org,,,,,,,,3
+Marcus Divers,"Rural Health Project Manager, Virginia Department of Medical Assistance Services",unknown,Virginia Department of Medical Assistance Services,VA,VA CareIQ Provider Productivity,Marcus.divers@dmas.virginia.gov,Marcus.divers@dmas.virginia.gov,,,,,,,,3
+Vicki Humphreys,"Contact for grant applications, VHHA Foundation",unknown,VHHA Foundation,VA,VA CareIQ Remote Patient Monitoring,vhumphreys@vhha.com,vhumphreys@vhha.com,,,,,,,,3
+Heather Neil,"Program Manager, VHHA Foundation",champion,VHHA Foundation,VA,VA CareIQ Remote Patient Monitoring,hneil@vhha.com,hneil@vhha.com,,,,,,,,3
+Brandon Davis,Northern Shenandoah Valley Regional Commission,unknown,Northern Shenandoah Valley Regional Commission,VA,VA Mobile & Hybrid Care,bdavis@nsvregion.org,bdavis@nsvregion.org,,,,,,,,3
+Isabelle Drayer,"Agency Program Contact, Virginia Department of Medical Assistance Services",unknown,Virginia Department of Medical Assistance Services,VA,VA Mobile & Hybrid Care,isabelle.drayer@dmas.virginia.gov,isabelle.drayer@dmas.virginia.gov,,,,,,,,3
+Joel Reagan,Virginia Department of Medical Assistance Services,unknown,Virginia Department of Medical Assistance Services,VA,VA Mobile & Hybrid Care,joel.reagan@dmas.virginia.gov,joel.reagan@dmas.virginia.gov,,,,,,,,3
+Heidi Hertz,"Director, Rural Health Transformation, Office of the Governor of Virginia",champion,Office of the Governor of Virginia,VA,"VA RHTP program, all Virginia tracks",Heidi.Hertz@governor.virginia.gov,Heidi.Hertz@governor.virginia.gov,,,,,,,,3
+No named individual published,Program inbox,champion,"Idaho Department of Health and Welfare, RHTP",ID,ID Healthcare Infrastructure Support,IdahoRHTP@dhw.idaho.gov,IdahoRHTP@dhw.idaho.gov,,,,,,,,3
+Travis Boucher,"Vice President, Rural Health Transformation, Foundation for Healthy Communities",unknown,Foundation for Healthy Communities,NH,NH Rural Primary Care Transformation (GO-NORTH),,,,,,,,,,1
+No named individual published,Program inbox,champion,Foundation for Healthy Communities,NH,NH Rural Primary Care Transformation (GO-NORTH),GO-NORTH-FHC@healthynh.org,GO-NORTH-FHC@healthynh.org,,,,,,,,3
+No named individual published,Program inbox,champion,"Minnesota Department of Health, Office of Rural Health and Primary Care",MN,MN Rural Telehealth Services RFP,rural.transformation.mdh@state.mn.us,rural.transformation.mdh@state.mn.us,,,,,,,,3
+Zomi Bloom,"State Program Administrator Principal, Minnesota Department of Health",economic_buyer,Minnesota Department of Health,MN,MN Rural Telehealth Services RFP,grants.ruraltransformation.mdh@state.mn.us,grants.ruraltransformation.mdh@state.mn.us,,,,,,,,3
+Ann Storey,"Director for Healthcare Programs, Illinois Community College Board",economic_buyer,Illinois Community College Board,IL,IL ICCB Rural Health ROOTS (Initiative 3B),ann.l.storey@illinois.gov,ann.l.storey@illinois.gov,,,,,,,,3
+Dana Hawes,"Chief Growth Officer, Comagine Health",unknown,Comagine Health,ID,Comagine Health (partner target),,,,,,,,,,1
+No named individual published,Program inbox,champion,"Oklahoma State Department of Health, RHTP",OK,OK maternal remote patient monitoring,OklahomaRHTP@health.ok.gov,OklahomaRHTP@health.ok.gov,,,,,,,,3
+Tracey Douglas,"Director of Grants Management Financial Services, Oklahoma State Department of Health",champion,Oklahoma State Department of Health,OK,OK RHTP award administration,tracey.douglas@health.ok.gov,tracey.douglas@health.ok.gov,,,,,,,,3
+"Jared M. Droze, MHA","Director of Virtual Care, OSU Medicine",economic_buyer,Oklahoma State University — OSU Medicine,OK,OK OSU Medicine Virtual Care OB/GYN,,,,,,,,,,1
+Hayley Warren,"Manager of Rural Health, Oklahoma Hospital Association",unknown,Oklahoma Hospital Association,OK,OK community health worker expansion,,,,,,,,,,1
+No named individual published,Program inbox,champion,"New Jersey Department of Human Services, NJ RHT",NJ,NJ AtlantiCare doula integration model,mahs.njrht@dhs.nj.gov,mahs.njrht@dhs.nj.gov,,,,,,,,3
+No named individual published,Program inbox,champion,"New York State Department of Health, RCHI",NY,NY RCHI awardee cohort,rchi@health.ny.gov,rchi@health.ny.gov,,,,,,,,3
+Elizabeth Green,"ToRCH Program Manager, Bothwell Regional Health Center (Hub 13)",champion,Bothwell Regional Health Center,MO,MO ToRCH Care Hub anchors,torch@brhc.org,torch@brhc.org,,,,,,,,3
+Steven Hoffman,"Named point of contact, RFI 0000000012SL",champion,Missouri Department of Social Services,MO,MO ToRCH program; MO Virtual Care Expansion follow-on,Steven.Hoffman@dss.mo.gov,Steven.Hoffman@dss.mo.gov,,,,,,,,3

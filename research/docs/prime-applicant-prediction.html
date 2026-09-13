@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prime Applicant Prediction — system specification</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#F6F7F4; --panel:#FFFFFF; --ink:#16211C; --muted:#5C6B62;
+  --primary:#2E6B4A; --primary-soft:#E4EDE6; --slate:#2C4F6B;
+  --oxide:#9C4A18; --oxide-soft:#F6EAE0; --rule:#DCE1D8; --rule-strong:#B9C2B6;
+  --max:1180px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--ground);color:var(--ink);
+  font-family:"Public Sans",system-ui,sans-serif;font-size:16.5px;line-height:1.65;
+  -webkit-font-smoothing:antialiased}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 32px}
+.prose{max-width:74ch}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.12;
+  margin:0;letter-spacing:-.012em}
+h2{font-size:clamp(26px,3.4vw,36px);margin:0 0 14px}
+h3{font-size:21px;margin:36px 0 10px;font-weight:600}
+h4{font-family:"Public Sans",sans-serif;font-size:15px;font-weight:600;
+  margin:26px 0 8px;color:var(--primary)}
+p{margin:0 0 15px}
+a{color:var(--primary)}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.88em}
+code{background:var(--primary-soft);padding:1px 5px;border-radius:3px}
+strong{font-weight:600}
+
+/* masthead */
+.mast{border-bottom:1px solid var(--rule-strong);background:var(--panel)}
+.mast .wrap{display:flex;justify-content:space-between;align-items:baseline;
+  gap:20px;padding-top:16px;padding-bottom:16px;flex-wrap:wrap}
+.mast .who{font-weight:600;font-size:14px;letter-spacing:.02em}
+.mast .meta{font-size:13.5px;color:var(--muted)}
+
+/* hero */
+.hero{background:var(--panel);border-bottom:1px solid var(--rule-strong);
+  padding:56px 0 0}
+.hero h1{font-size:clamp(34px,4.6vw,54px);max-width:24ch;margin-bottom:22px}
+.hero .stand{font-size:18.5px;color:var(--muted);max-width:68ch;margin-bottom:10px;
+  font-weight:300;line-height:1.55}
+
+/* the worked trace */
+.trace{margin:48px 0 0;border-top:1px solid var(--rule);padding-top:22px}
+.trace .lead{font-size:13px;color:var(--muted);margin-bottom:14px}
+.tracerow{display:flex;flex-wrap:wrap;align-items:flex-end;gap:0;
+  border-bottom:1px solid var(--rule-strong)}
+.cell{padding:12px 20px 16px;border-left:1px solid var(--rule);flex:1 1 96px;
+  min-width:96px}
+.cell:first-child{border-left:none;padding-left:0;flex:2 1 240px}
+.cell .k{font-size:11.5px;color:var(--muted);letter-spacing:.03em;
+  margin-bottom:4px;display:block}
+.cell .v{font-family:"JetBrains Mono",monospace;font-size:21px;
+  color:var(--ink);font-weight:500}
+.cell.econ{flex:1.5 1 190px}
+.cell.econ .v{font-size:14px;line-height:1.45}
+.cell.res{background:var(--primary-soft);flex:1 1 158px}
+.cell.res .v{color:var(--primary);font-size:25px}
+.cell .sub{font-size:12px;color:var(--muted);display:block;margin-top:3px}
+.op{align-self:center;padding:0 2px 18px;color:var(--rule-strong);font-size:15px}
+
+/* sections */
+section{padding:64px 0;border-bottom:1px solid var(--rule)}
+section:last-of-type{border-bottom:none}
+.sec-h{display:flex;gap:16px;align-items:baseline;margin-bottom:26px}
+.sec-n{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--primary);
+  font-weight:500;padding-top:6px;white-space:nowrap}
+
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--rule-strong);background:var(--panel);
+  margin:22px 0}
+table{border-collapse:collapse;width:100%;font-size:14px}
+thead th{text-align:left;padding:11px 14px;font-weight:600;font-size:12.5px;
+  color:var(--muted);border-bottom:1px solid var(--rule-strong);
+  white-space:nowrap;background:var(--ground)}
+tbody td{padding:10px 14px;border-bottom:1px solid var(--rule);
+  vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+td.strong{font-weight:600}
+td.small{font-size:11.5px;color:var(--muted)}
+.bar{display:block}
+tr.hi td{background:var(--primary-soft);font-weight:600}
+tr.oracle td{color:var(--slate);font-style:italic}
+tr.drop td{background:var(--oxide-soft)}
+td.delta.up{color:var(--oxide);font-weight:600}
+td.delta.down{color:var(--muted)}
+td.fam{font-weight:600;color:var(--primary);font-size:15px}
+.fdesc{font-size:13px;color:var(--muted);margin:4px 0 0;max-width:64ch;
+  line-height:1.5}
+.pill{font-size:11.5px;padding:3px 9px;border-radius:2px;white-space:nowrap;
+  font-weight:500}
+.pill.on{background:var(--primary-soft);color:var(--primary)}
+.pill.off{background:var(--oxide-soft);color:var(--oxide)}
+.phase{font-size:11px;font-weight:600;letter-spacing:.04em}
+.phase.now{color:var(--primary)}
+.phase.next{color:var(--slate)}
+.phase.later{color:var(--muted)}
+.tier-A{color:var(--primary);font-weight:600}
+.tier-B{color:var(--slate)}
+.tier-C{color:var(--muted)}
+
+/* callouts */
+.note{border-left:3px solid var(--primary);background:var(--panel);
+  padding:20px 24px;margin:26px 0;max-width:78ch}
+.note.warn{border-left-color:var(--oxide)}
+.note h4{margin-top:0}
+.note p:last-child{margin-bottom:0}
+
+/* stat strip */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  border:1px solid var(--rule-strong);background:var(--panel);margin:26px 0}
+.stat{padding:18px 20px;border-right:1px solid var(--rule)}
+.stat:last-child{border-right:none}
+.stat .v{font-family:"JetBrains Mono",monospace;font-size:26px;font-weight:500;
+  display:block;line-height:1.2}
+.stat .k{font-size:12.5px;color:var(--muted);margin-top:5px;display:block}
+
+/* cascade diagram */
+.casc{margin:28px 0;font-size:14px}
+.tier{display:flex;align-items:center;gap:14px;padding:13px 0;
+  border-bottom:1px dashed var(--rule)}
+.tier:last-child{border-bottom:none}
+.tier .lvl{font-family:"JetBrains Mono",monospace;font-size:11.5px;
+  color:var(--muted);width:56px;flex-shrink:0}
+.tier .box{padding:9px 15px;border:1px solid var(--rule-strong);
+  background:var(--panel);flex:1;max-width:520px}
+.tier.slot .box{border-color:var(--primary);border-width:2px;
+  background:var(--primary-soft)}
+.tier .box b{display:block;font-size:14.5px}
+.tier .box span{font-size:12.5px;color:var(--muted)}
+.tier .ind{flex-shrink:0;border-bottom:1px solid var(--rule-strong);height:1px}
+.tier[data-d="0"] .ind{width:0} .tier[data-d="1"] .ind{width:26px}
+.tier[data-d="2"] .ind{width:52px} .tier[data-d="3"] .ind{width:78px}
+.tier[data-d="4"] .ind{width:104px}
+
+/* protocol strip */
+.proto{display:flex;margin:24px 0;border:1px solid var(--rule-strong);
+  overflow:hidden;font-size:12.5px;font-family:"JetBrains Mono",monospace}
+.proto div{padding:11px 8px;text-align:center;flex:1;border-right:1px solid var(--rule)}
+.proto div:last-child{border-right:none}
+.proto .tr{background:var(--panel);color:var(--muted)}
+.proto .ca{background:#EDF1F5;color:var(--slate)}
+.proto .te{background:var(--primary-soft);color:var(--primary);font-weight:500}
+.proto .fu{background:var(--ground);color:var(--rule-strong)}
+
+ul,ol{max-width:74ch;padding-left:22px;margin:0 0 16px}
+li{margin-bottom:8px}
+.foot{padding:36px 0 60px;font-size:13.5px;color:var(--muted)}
+.foot .prose{max-width:74ch}
+@media (max-width:720px){
+  .wrap{padding:0 20px}
+  .cell:first-child{flex:1 1 100%;border-left:none}
+  .cell{flex:1 1 45%}
+  .sec-h{flex-direction:column;gap:2px}
+}
+@media print{body{background:#fff} section{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<div class="mast"><div class="wrap">
+  <span class="who">Avocado Health &middot; Prime Applicant Prediction</span>
+  <span class="meta">System specification and backtest &middot; v0.9 &middot; prepared by Bhuvan Kanna</span>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <h1>Predicting who wins the money, before the RFP is written.</h1>
+  <p class="stand">Civic Operator answers <em>what is posted today</em>. This system answers the
+  question that actually drives Avocado's pipeline: for a funding event that has not been
+  solicited yet, which organizations will apply, which of those will win, and which of the
+  winners need a technology layer they cannot build themselves.</p>
+  <p class="stand">Three models, 63 candidate features across seven families,
+  37,325 organization&ndash;solicitation pairs, validated by forward chaining only.</p>
+
+  <div class="trace">
+    <p class="lead">One scored pair, end to end &mdash; the top row of this week's list</p>
+    <div class="tracerow">
+      <div class="cell"><span class="k">Organization</span>
+        <span class="v" style="font-size:16px">Birth Justice Alliance of Talawanda</span>
+        <span class="sub">OB &middot; MS &middot; rubric 42 &middot; tier B</span></div>
+      <div class="cell"><span class="k">P(applies &amp; wins)</span><span class="v">0.114</span>
+        <span class="sub">Model A</span></div>
+      <div class="op">&times;</div>
+      <div class="cell"><span class="k">P(Avocado fit)</span><span class="v">0.98</span>
+        <span class="sub">Model B</span></div>
+      <div class="op">&times;</div>
+      <div class="cell"><span class="k">P(tech-layer slot)</span><span class="v">0.92</span>
+        <span class="sub">Model C</span></div>
+      <div class="op">&times;</div>
+      <div class="cell econ"><span class="k">ACV &times; reach &times; discount</span>
+        <span class="v">$60,000<br>&times; 1.15 &times; 0.89</span>
+        <span class="sub">segment economics</span></div>
+      <div class="op">=</div>
+      <div class="cell res"><span class="k">Expected value</span>
+        <span class="v">$6,322</span><span class="sub">risk-adjusted</span></div>
+    </div>
+  </div>
+</div></header>
+
+<main>
+
+<!-- 1 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;1</span><h2>Where the model sits in the money</h2></div>
+<div class="prose">
+<p>The Hawaii win is the whole thesis in one sentence: Healthy Mothers Healthy Babies won the
+Department of Health RFP, and Avocado was the platform underneath. The unit of pursuit is
+therefore never the solicitation. It is the organization that is about to have money and will
+need something to deliver with.</p>
+<p>That makes prediction tractable, because the cascade is public. Every layer below is
+readable from federal award records, state plan documents and procurement portals.</p>
+</div>
+
+<div class="casc">
+  <div class="tier" data-d="0"><span class="lvl">federal</span><span class="ind"></span><div class="box">
+    <b>CMS appropriation &mdash; assistance listing 93.798</b>
+    <span>$10B/year, FY2026&ndash;2030. All 50 states awarded 2025-12-29.</span></div></div>
+  <div class="tier" data-d="1"><span class="lvl">state</span><span class="ind"></span><div class="box">
+    <b>State prime award and RHT plan</b>
+    <span>e.g. Kentucky RHTCMS332079, $212,905,591 obligated. Observable in USAspending.</span></div></div>
+  <div class="tier" data-d="2"><span class="lvl">tier 1</span><span class="ind"></span><div class="box">
+    <b>First-tier subrecipients</b>
+    <span>County and district health departments, hospitals, FQHCs. Named, dated, and dollar-valued.</span></div></div>
+  <div class="tier" data-d="3"><span class="lvl">tier 2</span><span class="ind"></span><div class="box">
+    <b>Second-tier subrecipients &mdash; CBOs, perinatal networks, First 5 commissions</b>
+    <span>Small enough to need a partner. This is where the applicant-prediction model earns its keep.</span></div></div>
+  <div class="tier slot" data-d="4"><span class="lvl">layer</span><span class="ind"></span><div class="box">
+    <b>The technology layer &mdash; Avocado's slot</b>
+    <span>Chosen 3 to 12 months before the solicitation posts, which is why a daily feed of live RFPs arrives too late.</span></div></div>
+</div>
+
+<div class="wrap prose">
+<h3>Unobligated remainder ranks the states</h3>
+<p>The single most decision-relevant number in the cascade is not in any briefing: prime
+obligation minus the sum of first-tier subawards. It is how much money a state still has to
+move, and it is a subtraction, not an opinion. Kentucky has moved
+10% of its prime; Idaho and Missouri have
+published no first-tier subawards at all, which means every dollar is still ahead of them.</p>
+</div>
+
+<div class="wrap"><div class="tw"><table>
+<thead><tr><th>State</th><th>Prime obligated</th><th>First-tier moved</th><th>Recipients</th>
+<th>Remainder</th><th></th><th>% unmoved</th></tr></thead>
+<tbody><tr><td class='mono'>TX</td><td class='num'>$231,700,000</td><td class='num'>$6,200,000</td><td class='num'>5</td><td class='num strong'>$225,500,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="225500000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="150" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>97%</td></tr><tr><td class='mono'>CA</td><td class='num'>$226,100,000</td><td class='num'>$12,800,000</td><td class='num'>11</td><td class='num strong'>$213,300,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="213300000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="141" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>94%</td></tr><tr><td class='mono'>MO</td><td class='num'>$204,300,000</td><td class='num'>$0</td><td class='num'>0</td><td class='num strong'>$204,300,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="204300000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="135" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>100%</td></tr><tr><td class='mono'>KY</td><td class='num'>$212,905,591</td><td class='num'>$20,426,889</td><td class='num'>19</td><td class='num strong'>$192,478,702</td><td><svg class="bar" width="150" height="9" role="img" aria-label="192478701.560"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="128" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>90%</td></tr><tr><td class='mono'>NE</td><td class='num'>$191,400,000</td><td class='num'>$3,100,000</td><td class='num'>4</td><td class='num strong'>$188,300,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="188300000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="125" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>98%</td></tr><tr><td class='mono'>ID</td><td class='num'>$185,974,368</td><td class='num'>$0</td><td class='num'>0</td><td class='num strong'>$185,974,368</td><td><svg class="bar" width="150" height="9" role="img" aria-label="185974367.810"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="123" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>100%</td></tr><tr><td class='mono'>MS</td><td class='num'>$189,200,000</td><td class='num'>$4,700,000</td><td class='num'>6</td><td class='num strong'>$184,500,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="184500000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="122" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>98%</td></tr><tr><td class='mono'>HI</td><td class='num'>$137,800,000</td><td class='num'>$9,400,000</td><td class='num'>7</td><td class='num strong'>$128,400,000</td><td><svg class="bar" width="150" height="9" role="img" aria-label="128400000.000"><rect width="150" height="9" rx="1" fill="var(--rule)"/><rect width="85" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>93%</td></tr></tbody></table></div>
+<p class="prose" style="font-size:13.5px;color:var(--muted)">Kentucky, Idaho and Nebraska
+figures are as printed in the 2026-09-03 Civic Operator briefing and the USAspending records it
+cites. Remaining states are simulated at realistic magnitudes pending live API keys.</p>
+</div>
+</div></section>
+
+<!-- 2 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;2</span><h2>Three models, because it is three questions</h2></div>
+<div class="prose">
+<p>A single score collapses three independent uncertainties and hides which one is driving the
+answer. Separating them means each can be validated against its own evidence, and a target that
+ranks low can be diagnosed rather than merely discarded.</p>
+</div>
+
+<div class="prose">
+<h4>Model A &mdash; will this organization apply and win?</h4>
+<p>Learning-to-rank, not binary classification. The operational question is never "will this org
+win money" in the abstract; it is "for this solicitation, which twenty organizations should get
+contact mapping this week." LightGBM LambdaRank with query groups set to solicitations and NDCG
+truncated at 30 optimises exactly the part of the list a human reads.</p>
+<p>Labels are graded: <code>2</code> for a prime awardee, <code>1</code> for a first-tier
+subrecipient, <code>0</code> for eligible-and-not-selected, measured over an eighteen-month
+window after close. The grading is deliberate. A first-tier subrecipient is often the
+<em>better</em> Avocado prospect: it has money, it has delivery obligations, and it is small
+enough to need a partner.</p>
+<p>Negatives are the eligible universe, not a random sample. Random negatives teach the model
+"is this org even in the right state," which is trivially true at scan time and destroys the
+signal where it matters.</p>
+
+<h4>Model B &mdash; is this a viable Avocado deployment?</h4>
+<p>Positive-unlabelled learning, because Avocado has roughly five known positives and zero
+labelled negatives. An organization that has not bought Avocado has almost always simply never
+been asked. Details in &sect;&nbsp;7.</p>
+
+<h4>Model C &mdash; can Avocado occupy the technology slot without becoming the prime?</h4>
+<p>A transparent scorecard over clauses extracted from the solicitation PDF: does it permit
+subgrants, does it permit partnerships, is technology an allowable cost, does the applicant lack
+in-house build capacity. Deliberately not learned. There is no training signal &mdash; Avocado
+has one observed instance &mdash; and the inputs are legally load-bearing. A model that quietly
+learned "Idaho solicitations are fine" would be worse than useless.</p>
+</div>
+</div></section>
+
+<!-- 3 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;3</span><h2>Feature inventory</h2></div>
+<div class="prose">
+<p>Seven families. Family D is the one no generic government-contracting model has: it is the
+operational definition of Avocado's ICP. Family G exists so the model can be audited for a
+specific failure rather than trusted not to have it.</p>
+</div>
+<div class="tw"><table>
+<thead><tr><th></th><th>Family</th><th>Features</th><th>Disposition after &sect;&nbsp;5</th></tr></thead>
+<tbody><tr><td class='mono fam'>A</td><td><strong>Award history</strong><p class='fdesc'>Can this organization win federal money at all? Prior award count, recency, size, breadth of assistance listings, and whether it has ever held a prime rather than only subawards.</p></td><td class='num'>12</td><td><span class='pill on'>in Model A</span></td></tr><tr><td class='mono fam'>B</td><td><strong>Firmographic</strong><p class='fdesc'>Scale and capability to execute. Revenue, headcount, government-grant dependency ratio, UEI registration, segment.</p></td><td class='num'>9</td><td><span class='pill off'>dropped by ablation</span></td></tr><tr><td class='mono fam'>C</td><td><strong>Geography &amp; need</strong><p class='fdesc'>Is the organization inside the eligible geography, and is that geography needy? Rurality, Medicaid penetration, maternity-care-desert flag, language spoken at home, distance to the nearest OB unit, broadband gap.</p></td><td class='num'>9</td><td><span class='pill on'>in Model A</span></td></tr><tr><td class='mono fam'>D</td><td><strong>Staff model (Avocado-specific)</strong><p class='fdesc'>Does it employ the people Avocado gives time back to? Nine offload roles detected from job postings, Form 990 program narratives and site copy, scored with a saturating sum so one org with forty CHW postings does not swamp one with two.</p></td><td class='num'>13</td><td><span class='pill off'>moved to Model B</span></td></tr><tr><td class='mono fam'>E</td><td><strong>Partnership graph</strong><p class='fdesc'>Who does it partner with, and who do its primes fund? Prime affinity, co-recipient centrality, and whether a peer has won under this prime when the organization itself has not.</p></td><td class='num'>5</td><td><span class='pill on'>in Model A</span></td></tr><tr><td class='mono fam'>F</td><td><strong>Solicitation interaction</strong><p class='fdesc'>Fit terms between the org and the specific opportunity. Award-size fit as a symmetric log ratio, days to close, subgrant and partnership clauses, evaluation-criteria weights.</p></td><td class='num'>12</td><td><span class='pill off'>dropped by ablation</span></td></tr><tr><td class='mono fam'>G</td><td><strong>Record completeness</strong><p class='fdesc'>How much of A through F is actually observed. Exists so the model can be audited for scoring thin records lower, rather than silently doing it.</p></td><td class='num'>3</td><td><span class='pill off'>dropped by ablation</span></td></tr></tbody></table></div>
+
+<div class="prose">
+<h3>How family D is actually computed</h3>
+<p>Nine offload roles &mdash; community health worker, home visitor, doula, lactation consultant,
+HealthySteps specialist, care coordinator, perinatal mental health, family resource navigator,
+parent educator &mdash; each with a weighted lexicon matched against job-posting titles and
+bodies, Form 990 Part III program narratives, and site copy. Source kind carries a weight: a
+posting title is stronger evidence than a 990 mention, because it implies a funded, currently
+open position.</p>
+<p>Scores saturate as <code>1 − exp(−Σw)</code> rather than accumulating linearly. What matters
+for Avocado is whether the role exists and is funded, not its headcount, and a saturating sum
+stops one large system with forty CHW postings from outranking a county coalition with two.</p>
+</div>
+</div></section>
+
+<!-- 4 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;4</span><h2>Validation protocol</h2></div>
+<div class="prose">
+<p>Forward chaining only, with as-of feature computation. This is the single most important
+engineering decision in the system and it is not a stylistic preference.</p>
+<p>USAspending subaward records are backfilled by months &mdash; a July action date routinely
+first appears in September. A naive join lets the model see awards that had not been published
+when the shortlist would have been built, and produces a backtest that flatters itself by
+twenty to thirty NDCG points. Every feature here is computed at <code>as_of = close_date −
+60 days</code>, and the loader refuses any record whose observation date is later.</p>
+</div>
+
+<div class="proto">
+  <div class="tr">train &le; T</div><div class="ca">calibrate T&hellip;T+200d</div>
+  <div class="te">test T+200&hellip;T+400d</div><div class="fu">unseen</div>
+</div>
+
+<div class="tw"><table>
+<thead><tr><th>Fold</th><th>Cut date</th><th>Test opps</th><th>NDCG@10</th><th>NDCG@20</th>
+<th>Recall@20</th><th>Hit@20</th><th>PR-AUC</th><th>ECE</th><th>Conformal cov.</th>
+<th>Set size</th></tr></thead>
+<tbody><tr><td class='mono'>0</td><td class='mono'>2023-08-06</td><td class='num'>23</td><td class='num'>0.032</td><td class='num'>0.067</td><td class='num'>0.137</td><td class='num'>0.478</td><td class='num'>0.030</td><td class='num'>0.0042</td><td class='num'>0.992</td><td class='num'>100%</td></tr><tr><td class='mono'>1</td><td class='mono'>2024-03-16</td><td class='num'>22</td><td class='num'>0.079</td><td class='num'>0.108</td><td class='num'>0.170</td><td class='num'>0.773</td><td class='num'>0.046</td><td class='num'>0.0060</td><td class='num'>0.961</td><td class='num'>93%</td></tr><tr><td class='mono'>2</td><td class='mono'>2024-10-25</td><td class='num'>17</td><td class='num'>0.107</td><td class='num'>0.136</td><td class='num'>0.186</td><td class='num'>0.588</td><td class='num'>0.041</td><td class='num'>0.0058</td><td class='num'>0.945</td><td class='num'>94%</td></tr><tr><td class='mono'>3</td><td class='mono'>2025-06-05</td><td class='num'>25</td><td class='num'>0.133</td><td class='num'>0.171</td><td class='num'>0.217</td><td class='num'>0.760</td><td class='num'>0.055</td><td class='num'>0.0028</td><td class='num'>1.000</td><td class='num'>100%</td></tr></tbody></table></div>
+
+<div class="prose">
+<p>Positive rate across all pairs is 3.28%, so PR-AUC is reported rather than
+ROC-AUC, which would read near 0.9 and mean nothing at this imbalance. Expected calibration
+error stays under 0.006 on every fold, which matters because
+<code>p_win</code> is multiplied by dollars downstream: a 0.30 has to mean 0.30 or the expected-value
+ranking is fiction.</p>
+<p>Conformal coverage tracks its nominal 90% within a few points across folds. Set size is the
+model's own admission of doubt &mdash; when it covers nearly the whole candidate pool, as on
+fold&nbsp;0, the honest reading is that the model has no comparable history for those
+solicitations and the ranking should not be shown as confident.</p>
+</div>
+</div></section>
+
+<!-- 5 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;5</span><h2>Results, against a ceiling</h2></div>
+<div class="prose">
+<p>An NDCG of 0.17 is uninterpretable on its own. Two reference rows fix that. The floor is the
+best single feature anyone would use without a model &mdash; prior award count. The ceiling is
+an oracle that ranks by the latent process actually generating awards in the simulation; nothing
+observable can beat it, so the gap between model and oracle is irreducible noise.</p>
+</div>
+
+<div class="tw"><table>
+<thead><tr><th>Ranking rule</th><th>NDCG@20</th><th></th><th>Recall@20</th><th>Hit@20</th>
+<th>PR-AUC</th></tr></thead>
+<tbody><tr><td>Geographic eligibility only</td><td class='num'>0.110</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.110"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="114" height="9" rx="1" fill="var(--muted)"/></svg></td><td class='num'>0.145</td><td class='num'>0.600</td><td class='num'>0.042</td></tr><tr><td>Organization revenue</td><td class='num'>0.085</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.085"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="88" height="9" rx="1" fill="var(--muted)"/></svg></td><td class='num'>0.157</td><td class='num'>0.760</td><td class='num'>0.045</td></tr><tr><td>Prior award $ total</td><td class='num'>0.120</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.120"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="124" height="9" rx="1" fill="var(--muted)"/></svg></td><td class='num'>0.186</td><td class='num'>0.680</td><td class='num'>0.047</td></tr><tr><td>Prior award count</td><td class='num'>0.137</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.137"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="142" height="9" rx="1" fill="var(--muted)"/></svg></td><td class='num'>0.219</td><td class='num'>0.760</td><td class='num'>0.049</td></tr><tr><td>Full model</td><td class='num'>0.129</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.129"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="134" height="9" rx="1" fill="var(--muted)"/></svg></td><td class='num'>0.190</td><td class='num'>0.760</td><td class='num'>0.047</td></tr><tr class='hi'><td>Model, ablation-selected</td><td class='num'>0.171</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.171"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="177" height="9" rx="1" fill="var(--primary)"/></svg></td><td class='num'>0.217</td><td class='num'>0.760</td><td class='num'>0.055</td></tr><tr class='oracle'><td>Oracle (latent generator)</td><td class='num'>0.193</td><td><svg class="bar" width="200" height="9" role="img" aria-label="0.193"><rect width="200" height="9" rx="1" fill="var(--rule)"/><rect width="200" height="9" rx="1" fill="var(--slate)"/></svg></td><td class='num'>0.239</td><td class='num'>0.760</td><td class='num'>0.067</td></tr></tbody></table></div>
+
+<div class="wrap"><div class="stats">
+  <div class="stat"><span class="v">0.171</span><span class="k">NDCG@20, shipped model</span></div>
+  <div class="stat"><span class="v">+25%</span><span class="k">over best single feature</span></div>
+  <div class="stat"><span class="v">62%</span><span class="k">of the gap to the oracle, closed</span></div>
+  <div class="stat"><span class="v">0.217</span><span class="k">recall@20 &mdash; share of eventual winners in the top 20</span></div>
+</div></div>
+
+<div class="wrap prose">
+<p>Read the recall figure operationally rather than as a score. Roughly a fifth of the eventual
+winners of a solicitation appear in a twenty-name shortlist drawn from a candidate pool of
+several hundred, generated before the solicitation posts. Against the current alternative
+&mdash; reading a briefing of already-posted opportunities and working the issuing agency's
+contacts &mdash; that is the difference between arriving before partner selection and arriving
+after it.</p>
+</div>
+</div></section>
+
+<!-- 6 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;6</span><h2>The ablation caught an architecture error</h2></div>
+<div class="prose">
+<p>Each family is removed in turn and the model retrained. Validation is the calibration fold,
+never test, so the selection decision is not made on the data used to report the result.</p>
+</div>
+
+<div class="tw"><table>
+<thead><tr><th>Family removed</th><th>Validation NDCG@20</th><th>&Delta; vs full</th>
+<th>Test NDCG@20</th><th>Decision</th></tr></thead>
+<tbody><tr class='drop'><td>Record completeness</td><td class='num'>0.1648</td><td class='num delta up'>+0.0319</td><td class='num'>0.114</td><td>dropped</td></tr><tr class='drop'><td>Firmographic</td><td class='num'>0.1595</td><td class='num delta up'>+0.0266</td><td class='num'>0.131</td><td>dropped</td></tr><tr class='drop'><td>Staff model (Avocado-specific)</td><td class='num'>0.1560</td><td class='num delta up'>+0.0232</td><td class='num'>0.124</td><td>dropped</td></tr><tr class='drop'><td>Solicitation interaction</td><td class='num'>0.1450</td><td class='num delta up'>+0.0121</td><td class='num'>0.159</td><td>dropped</td></tr><tr class='keep'><td>Partnership graph</td><td class='num'>0.1303</td><td class='num delta down'>−0.0025</td><td class='num'>0.119</td><td>kept</td></tr><tr class='keep'><td>Award history</td><td class='num'>0.1232</td><td class='num delta down'>−0.0096</td><td class='num'>0.132</td><td>kept</td></tr><tr class='keep'><td>Geography & need</td><td class='num'>0.0905</td><td class='num delta down'>−0.0423</td><td class='num'>0.081</td><td>kept</td></tr></tbody></table></div>
+
+<div class="wrap">
+<div class="note warn">
+<h4>What this table says, and why it is the most useful output here</h4>
+<p>In the first trained version, the staff-model family carried <strong>49% of total split
+gain</strong> &mdash; by that measure the most important thing in the model. Removing it
+<em>improved</em> validation NDCG by +0.0232.
+That combination has one explanation: nine continuous, high-cardinality, nearly-noise features
+give a gradient-boosted tree an enormous number of plausible split points, so it memorises the
+training set through them and crowds out the award-history features that actually generalise.</p>
+<p>The fix is architectural, not a regularisation dial. Staff model predicts whether an
+organization is a good <em>Avocado deployment</em>. It does not predict whether that organization
+<em>wins a grant</em>. Those are Model B and Model A, and feeding B's features to A degrades
+both. The families flagged here were moved rather than deleted &mdash; family D is now Model B's
+primary input, where it belongs. NDCG@20 went from 0.129 to
+0.171 with 26 of 63 features retained.</p>
+<p>A permutation-importance chart would have shown the same 49% and been read as confirmation
+that the Avocado-specific work was paying off. Only the ablation, run against a held-out fold,
+distinguishes a feature that carries signal from one that carries capacity.</p>
+</div>
+</div>
+
+<div class="wrap"><div class="tw"><table>
+<thead><tr><th>Feature</th><th>Family</th><th>Gain share</th><th></th></tr></thead>
+<tbody><tr><td class='mono'>geo_rurality</td><td>Geography & need</td><td class='num'>38.5%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.385"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="160" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>geo_ob_distance_km</td><td>Geography & need</td><td class='num'>31.5%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.315"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="130" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>aw_first_seen_days</td><td>Award history</td><td class='num'>14.7%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.147"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="61" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>geo_lang_other_home</td><td>Geography & need</td><td class='num'>7.5%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.075"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="31" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>geo_broadband_gap</td><td>Geography & need</td><td class='num'>6.5%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.065"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="27" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>geo_medicaid_pen</td><td>Geography & need</td><td class='num'>1.2%</td><td><svg class="bar" width="160" height="9" role="img" aria-label="0.012"><rect width="160" height="9" rx="1" fill="var(--rule)"/><rect width="5" height="9" rx="1" fill="var(--primary)"/></svg></td></tr></tbody></table></div>
+<p class="prose" style="font-size:13.5px;color:var(--muted)">Shipped-model gain concentrates in
+Geography & need (85%) and Award history
+(15%). Partnership-graph features contribute nothing here because prime
+award IDs are near-constant per state in the simulation; on live USAspending data the co-recipient
+projection is expected to carry real signal, and that is an explicit thing to re-check at
+first live training rather than assume.</p>
+</div>
+</div></section>
+
+<!-- 7 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;7</span><h2>Model B: learning fit from five positives</h2></div>
+<div class="prose">
+<p>Avocado has roughly five known deployments and no labelled negatives at all. Training a
+standard classifier on positives-versus-everything-else learns "unlabelled," not "bad fit," and
+will confidently reject good prospects that were simply never contacted.</p>
+<p>Elkan&ndash;Noto handles this. Train a non-traditional classifier <code>g(x) = P(s=1|x)</code>
+on the labelled indicator, estimate the label frequency <code>c = P(s=1|y=1)</code> out of fold,
+and recover <code>P(y=1|x) = g(x)/c</code>.</p>
+</div>
+
+<div class="stats">
+  <div class="stat"><span class="v">157</span><span class="k">labelled positives of 4,059</span></div>
+  <div class="stat"><span class="v">0.039</span><span class="k">estimated label frequency c</span></div>
+  <div class="stat"><span class="v">0.609</span><span class="k">AUC vs latent fit (oracle 0.731)</span></div>
+  <div class="stat"><span class="v">0.78</span><span class="k">top-decile precision (base 0.60)</span></div>
+</div>
+
+<div class="prose">
+<p>Two results worth stating precisely rather than glossing.</p>
+<p><strong>The PU correction does not improve ranking, and cannot.</strong> Dividing by a constant
+is a monotone transform, so AUC is identical by construction &mdash; 0.609
+here against 0.605 for the uncorrected model, a difference that is
+fitting noise. What the correction fixes is magnitude. The naive model's mean predicted
+probability is 0.039, which is the <em>labelling</em> rate; it would tell
+leadership that almost no organization in the country is a fit. The corrected model recovers a
+prevalence near the true 0.60. Prevalence is what gets multiplied by
+dollars, so the correction matters for expected value and not at all for the shortlist order.</p>
+<p><strong>Calibration was the hard part, and the obvious tool was wrong.</strong> Scikit-learn's
+<code>CalibratedClassifierCV</code> averages the calibrated outputs of k fold-models. Under 4%
+positives the per-fold sigmoids are nearly flat, and averaging them destroyed the ranking the
+base model had found: AUC fell from 0.605 to 0.522. Replacing it with a single sigmoid fitted on
+pooled out-of-fold scores, applied to a base model refit on all data, restored the ranking and
+still calibrates honestly, because the sigmoid never sees a score its own base model produced
+in-sample.</p>
+</div>
+
+<div class="note warn">
+<h4>The weakest number in this system</h4>
+<p>48% of organizations have <code>g(x) &gt; c</code> and therefore cap
+at <code>p_fit = 1.0</code>. With 157 positives, <code>c</code> is estimated
+across a range of 0.0387 to 0.0388 and the fit probability
+stops discriminating at the top of the list. The consequence is specific and should be stated
+to anyone reading the output: <strong>expected value is a reliable ordering and an unreliable
+dollar forecast</strong> until the labelled set reaches roughly fifty real deployments. It is
+usable now for deciding who to call first; it is not usable now for forecasting a pipeline
+number.</p>
+<p>The Elkan&ndash;Noto correction also assumes positives are Selected Completely At Random.
+That is approximately true today, since Avocado's known deployments came from inbound, personal
+networks and one RFP, none of which correlate strongly with the fit features. It stops being
+true the moment this model starts choosing who gets contacted. Re-estimate <code>c</code> every
+quarter and alarm if it moves more than 30% between refits, because a moving <code>c</code> is
+how that assumption announces it has failed.</p>
+</div>
+</div></section>
+
+<!-- 8 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;8</span><h2>The failure mode worth building a test for</h2></div>
+<div class="prose">
+<p>Small rural CBOs post fewer jobs, file thinner 990s, and frequently have no website. Award
+history, firmographics and staff-model evidence are all systematically sparser for them. An
+uncorrected ranker learns "we know less about them" and expresses it as "they win less."</p>
+<p>That failure would point Avocado away from precisely the counties the product exists for.
+SMS reaches low-broadband, low-digital-literacy, rural families because an app does not. A model
+that quietly deprioritised frontier counties would be optimising against the company's own
+thesis, and it would do so invisibly.</p>
+</div>
+
+<div class="tw" style="max-width:560px"><table>
+<thead><tr><th>Stratum</th><th>Mean P(win)</th><th></th></tr></thead>
+<tbody><tr><td class='mono'>completeness_d0</td><td class='num'>0.0383</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.038"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="165" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>completeness_d1</td><td class='num'>0.0367</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.037"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="158" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>urban</td><td class='num'>0.0295</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.030"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="127" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>mixed</td><td class='num'>0.0354</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.035"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="152" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>rural</td><td class='num'>0.0391</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.039"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="168" height="9" rx="1" fill="var(--primary)"/></svg></td></tr><tr><td class='mono'>frontier</td><td class='num'>0.0394</td><td><svg class="bar" width="170" height="9" role="img" aria-label="0.039"><rect width="170" height="9" rx="1" fill="var(--rule)"/><rect width="170" height="9" rx="1" fill="var(--primary)"/></svg></td></tr></tbody></table></div>
+
+<div class="prose">
+<p>The audit runs on every scoring pass. Here the gradient runs mildly the other way &mdash;
+frontier counties score 33%
+above urban, because rurality is a genuine eligibility signal in rural-health solicitations
+&mdash; so the stratified recalibration did not fire. The point is not that the number came out
+fine. It is that the number is computed, logged and thresholded on every run, so the day it
+stops coming out fine, someone finds out.</p>
+</div>
+</div></section>
+
+<!-- 9 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;9</span><h2>From probability to a week's work</h2></div>
+<div class="prose">
+<p>Expected value is
+<code>P(win) &times; P(fit) &times; P(role) &times; ACV &times; reach &times; discount</code>.
+Deal size enters only through ACV and is not separately weighted, which mirrors the &times;1
+weight in the existing rubric.</p>
+<p>Ranking purely by expected value puts state health departments and MCOs at the top of every
+list, because their ACV is five to twenty times a CBO's. Those are also the twelve-to-thirty-six
+month cycles. Run that way, the pipeline books no revenue in year one and starves the three-to-six
+month segments that fund the company &mdash; exactly the failure the &times;1 weight was written
+to prevent, arrived at by a different route.</p>
+<p>So the allocator carries the sequencing as an explicit constraint rather than hoping the
+weights hold it: at least 45% of the week from the NOW segments, at most 15% from LATER, no more
+than three targets per state. The objective is a sum of per-target values and the constraints
+form a partition matroid, so greedy selection is exact rather than approximate. This week's list
+comes out 9 NOW and 11 NEXT.</p>
+</div>
+
+<div class="tw"><table>
+<thead><tr><th>Phase</th><th>Organization</th><th>Seg</th><th>St</th><th>P(win)</th>
+<th>P(fit)</th><th>P(role)</th><th>Reach</th><th>Exp. value</th><th>Rubric</th><th>Tier</th>
+<th>Top attributions</th></tr></thead>
+<tbody><tr><td class='phase now'>NOW</td><td>Birth Justice Alliance of Talawanda</td><td class='mono'>OB</td><td class='mono'>MS</td><td class='num'>0.114</td><td class='num'>0.98</td><td class='num'>0.92</td><td class='num'>1.15</td><td class='num'>$6,322</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Birth Justice Alliance of Verde</td><td class='mono'>OB</td><td class='mono'>ID</td><td class='num'>0.136</td><td class='num'>0.96</td><td class='num'>0.74</td><td class='num'>1.15</td><td class='num'>$5,975</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>geo_rurality, aw_first_seen_days</td></tr><tr><td class='phase now'>NOW</td><td>Birth Justice Alliance of Wabash</td><td class='mono'>OB</td><td class='mono'>AR</td><td class='num'>0.136</td><td class='num'>1.00</td><td class='num'>0.65</td><td class='num'>0.85</td><td class='num'>$4,024</td><td class='num'>36</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Family Resource Network of Sandhill</td><td class='mono'>CBO</td><td class='mono'>MS</td><td class='num'>0.114</td><td class='num'>1.00</td><td class='num'>0.90</td><td class='num'>1.15</td><td class='num'>$3,976</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Maternal Health Network of Verde</td><td class='mono'>OB</td><td class='mono'>NE</td><td class='num'>0.114</td><td class='num'>1.00</td><td class='num'>0.56</td><td class='num'>1.15</td><td class='num'>$3,958</td><td class='num'>40</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Partners for Healthy Families in Latimer</td><td class='mono'>CBO</td><td class='mono'>MS</td><td class='num'>0.114</td><td class='num'>0.96</td><td class='num'>0.90</td><td class='num'>1.15</td><td class='num'>$3,829</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Perinatal Collaborative of Harlan</td><td class='mono'>OB</td><td class='mono'>NE</td><td class='num'>0.114</td><td class='num'>0.95</td><td class='num'>0.56</td><td class='num'>1.15</td><td class='num'>$3,766</td><td class='num'>40</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase now'>NOW</td><td>Healthy Start of Marion</td><td class='mono'>CBO</td><td class='mono'>ID</td><td class='num'>0.136</td><td class='num'>1.00</td><td class='num'>0.71</td><td class='num'>1.15</td><td class='num'>$3,752</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>geo_rurality, aw_first_seen_days</td></tr><tr><td class='phase now'>NOW</td><td>Family Resource Network of Elkhorn</td><td class='mono'>CBO</td><td class='mono'>ID</td><td class='num'>0.136</td><td class='num'>0.98</td><td class='num'>0.73</td><td class='num'>1.15</td><td class='num'>$3,740</td><td class='num'>42</td><td class='mono tier-B'>B</td><td class='mono small'>geo_rurality, aw_first_seen_days</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Pine Hollow</td><td class='mono'>GOV</td><td class='mono'>MO</td><td class='num'>0.114</td><td class='num'>1.00</td><td class='num'>0.72</td><td class='num'>1.15</td><td class='num'>$27,876</td><td class='num'>41</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Latimer</td><td class='mono'>GOV</td><td class='mono'>MO</td><td class='num'>0.114</td><td class='num'>0.94</td><td class='num'>0.72</td><td class='num'>1.15</td><td class='num'>$26,345</td><td class='num'>41</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_rurality</td></tr><tr><td class='phase next'>NEXT</td><td>District Health Department of Wolf Creek</td><td class='mono'>GOV</td><td class='mono'>MO</td><td class='num'>0.114</td><td class='num'>0.95</td><td class='num'>0.71</td><td class='num'>1.15</td><td class='num'>$26,149</td><td class='num'>41</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_rurality</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Rockvale</td><td class='mono'>GOV</td><td class='mono'>CA</td><td class='num'>0.080</td><td class='num'>1.00</td><td class='num'>0.89</td><td class='num'>1.15</td><td class='num'>$24,271</td><td class='num'>41</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_rurality</td></tr><tr><td class='phase next'>NEXT</td><td>District Health Department of Wolf Creek</td><td class='mono'>GOV</td><td class='mono'>CA</td><td class='num'>0.080</td><td class='num'>1.00</td><td class='num'>0.89</td><td class='num'>1.15</td><td class='num'>$24,077</td><td class='num'>41</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_lang_other_home</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Wolf Creek</td><td class='mono'>GOV</td><td class='mono'>CA</td><td class='num'>0.080</td><td class='num'>1.00</td><td class='num'>0.91</td><td class='num'>1.00</td><td class='num'>$21,405</td><td class='num'>39</td><td class='mono tier-B'>B</td><td class='mono small'>geo_ob_distance_km, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>District Health Department of Pine Hollow</td><td class='mono'>GOV</td><td class='mono'>AR</td><td class='num'>0.114</td><td class='num'>1.00</td><td class='num'>0.63</td><td class='num'>1.00</td><td class='num'>$21,248</td><td class='num'>37</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Cedar</td><td class='mono'>GOV</td><td class='mono'>AR</td><td class='num'>0.136</td><td class='num'>0.94</td><td class='num'>0.62</td><td class='num'>0.85</td><td class='num'>$20,010</td><td class='num'>35</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Wabash</td><td class='mono'>GOV</td><td class='mono'>MT</td><td class='num'>0.136</td><td class='num'>0.96</td><td class='num'>0.45</td><td class='num'>1.00</td><td class='num'>$17,543</td><td class='num'>35</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>District Health Department of Latimer</td><td class='mono'>GOV</td><td class='mono'>NE</td><td class='num'>0.114</td><td class='num'>0.97</td><td class='num'>0.41</td><td class='num'>1.15</td><td class='num'>$15,640</td><td class='num'>33</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_broadband_gap</td></tr><tr><td class='phase next'>NEXT</td><td>County Health Department of Talawanda</td><td class='mono'>GOV</td><td class='mono'>MT</td><td class='num'>0.080</td><td class='num'>0.96</td><td class='num'>0.45</td><td class='num'>1.00</td><td class='num'>$10,254</td><td class='num'>35</td><td class='mono tier-B'>B</td><td class='mono small'>aw_first_seen_days, geo_rurality</td></tr></tbody></table></div>
+
+<div class="prose">
+<p>Every row carries exact TreeSHAP contributions from LightGBM's <code>pred_contrib</code>, so
+the briefing can print the reason next to the name. It also carries a rubric total on the
+existing 0&ndash;65 scale with its A/B/C tier, because a score nobody can check is a score nobody
+will act on. Dimensions 1, 2, 4 and 7 become computed; 3, 5 and 6 stay deterministic. The output
+is legible to someone who has never opened the model.</p>
+</div>
+</div></section>
+
+<!-- 10 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;10</span><h2>What this does not do</h2></div>
+<div class="prose">
+<ol>
+<li><strong>The numbers above are from simulation.</strong> State anchors, prime award IDs and
+obligation totals are real, taken from the 2026-09-03 briefing and the USAspending records it
+cites. The organization population and award outcomes are generated. Model quality here is
+evidence that the harness is sound and the metrics are honestly computed &mdash; it is not
+evidence of live accuracy, and no figure on this page should be repeated to a partner.</li>
+<li><strong>Expected value is an ordering, not a forecast</strong>, until Model B has roughly
+fifty labelled deployments. See &sect;&nbsp;7.</li>
+<li><strong>Partnership-graph features are unproven.</strong> They contribute zero gain in
+simulation for a structural reason that will not hold on live data. Re-check at first live
+training.</li>
+<li><strong>Contact-level resolution is out of scope here.</strong> This ranks organizations.
+Turning an organization into three named humans with verified emails and a role classification
+is a separate pipeline, and it is the one that determines whether any of this converts.</li>
+<li><strong>It will degrade the moment it succeeds.</strong> Once the model chooses who gets
+contacted, the SCAR assumption behind Model B breaks and the award labels start reflecting
+Avocado's own presence. Log every scored list with its timestamp so a future refit can condition
+on what was recommended, not only on what happened.</li>
+</ol>
+</div>
+</div></section>
+
+<!-- 11 -->
+<section><div class="wrap">
+<div class="sec-h"><span class="sec-n">&sect;&nbsp;11</span><h2>Build order</h2></div>
+<div class="prose">
+<p>Nothing here requires the whole system to exist before any of it is useful.</p>
+<ol>
+<li><strong>Briefing parser and diff engine, one week &mdash; already written.</strong> Every
+Civic Operator edition becomes an immutable snapshot; deltas become triggers. A contact flipping
+from "Not published" to source-verified, a due date moving, a subaward cohort growing from 19 to
+24 &mdash; each is an outreach event that is invisible if you only ever read today's edition.
+Zero machine learning, and it pays for itself the first time a deadline moves.</li>
+<li><strong>Cascade graph and unobligated remainder, one week.</strong> USAspending subaward
+endpoints, the subtraction in &sect;&nbsp;1, one table. Answers the open question of which states
+to pilot in with a computed number.</li>
+<li><strong>Model A on real award history, three to four weeks.</strong> Assistance listings
+93.798, 93.505, 93.926, 93.994 and 93.224 give several thousand real labelled events. The
+protocol in &sect;&nbsp;4 runs unchanged.</li>
+<li><strong>Solicitation document intelligence, two weeks.</strong> Clause extraction feeding
+Model C. Idaho's Laserfiche WebLink is scriptable; most state portals are.</li>
+<li><strong>Model B, ongoing.</strong> Blocked on labels, not on code. Every closed-won and
+closed-lost outcome logged from today forward is a training example, which is a reason to
+instrument the CRM now rather than later.</li>
+</ol>
+<h3>What the parser found in the 2026-09-03 edition</h3>
+<p>Run against the real briefing, the parser reads 45 contact rows and 4 opportunities. Of those
+45 rows, <strong>6 carry a public source and 39 do not</strong>. Civic Operator is scrupulous
+about the distinction and marks every unsourced row, which is the discipline that makes the feed
+worth paying for &mdash; but it means roughly six in seven contacts in a given edition are
+candidates for a resolution pipeline rather than addresses to mail. Government email patterns are
+inferable and verifiable (<code>firstname.lastname@ky.gov</code> is unmistakable from the
+Kentucky block alone), so this is a solvable gap and a large one.</p>
+<p>Writing that parser also surfaced a bug worth repeating because it is the kind that fails
+silently. The first version keyed rows on contact name. The 2026-09-03 edition contains the
+literal string "No named individual published" five times across five different agencies, so
+name-keyed rows collapse and every subsequent change to four of them becomes undetectable. The
+shipped version keys on (opportunity, name, organization) and raises a
+<code>duplicate_key</code> event rather than letting one row quietly win. Across this edition
+that recovers 3 rows that would otherwise have disappeared. A diff engine that misses changes is
+worse than no diff engine, because it is trusted.</p>
+
+<p>Steps one and two are the ones to do first regardless of whether the models ever get built.
+They convert a subscription that prints a document into an asset that accumulates.</p>
+</div>
+</div></section>
+
+</main>
+
+<footer class="foot"><div class="wrap prose">
+<p>Prime Applicant Prediction v0.9 &middot; 37,325 pairs &middot; 63
+candidate features, 26 shipped &middot; four forward-chained folds &middot;
+LightGBM LambdaRank, Elkan&ndash;Noto PU, isotonic calibration, split conformal at
+&alpha;&nbsp;=&nbsp;0.10.</p>
+<p>Confidential &mdash; MNDA between Avocado Health and Bhuvan Kanna, executed 2026-08-09.
+Contains no Avocado partner terms, deal economics, or material from the ICP matrix, HMA report
+or Riverside brief.</p>
+</div></footer>
+
+</body>
+</html>

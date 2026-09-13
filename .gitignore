@@ -1,0 +1,27 @@
+# never commit
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.*
+
+# build + scratch
+outputs/
+dist-tmp/
+.pap_cache/
+editions/            # dashboard's browser-side snapshot dumps
+usaspending_live*.json
+artifacts/
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.DS_Store
+.playwright/
+node_modules/
+
+# keep dashboard/dist — it is the deliverable
+!dashboard/dist/
+!dashboard/dist/*.html

@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Avocado Health — RHTP Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Public+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --ground:#F6F7F4;--panel:#fff;--ink:#16211C;--muted:#5C6B62;--primary:#2E6B4A;
+  --primary-soft:#E4EDE6;--slate:#2C4F6B;--slate-soft:#E8EEF3;--oxide:#9C4A18;
+  --oxide-soft:#F6EAE0;--rule:#DCE1D8;--rule-strong:#B9C2B6;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:"Public Sans",system-ui,sans-serif;
+  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1320px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.15;margin:0;letter-spacing:-.01em}
+h2{font-size:27px;margin-bottom:8px}h3{font-size:19px;margin:30px 0 8px}
+h4{font-family:"Public Sans";font-size:14px;font-weight:600;color:var(--primary);margin:22px 0 6px}
+p{margin:0 0 13px;max-width:76ch}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace;font-size:.87em}
+code{background:var(--primary-soft);padding:1px 5px;border-radius:3px}
+a{color:var(--primary)}
+/* header */
+header{background:var(--panel);border-bottom:1px solid var(--rule-strong)}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:15px 0;flex-wrap:wrap}
+.brand{font-weight:600;font-size:15px}
+.brand span{color:var(--muted);font-weight:400}
+.live{font-size:12.5px;font-family:"JetBrains Mono",monospace;display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--rule-strong);display:inline-block}
+.dot.ok{background:var(--primary)}.dot.warn{background:var(--oxide)}
+nav{display:flex;gap:2px;border-top:1px solid var(--rule);overflow-x:auto}
+nav button{background:none;border:none;border-bottom:2px solid transparent;padding:12px 18px;
+  font:inherit;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav button:hover{color:var(--ink)}
+nav button.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+main{padding:34px 0 80px}
+.view{display:none}.view.on{display:block}
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));border:1px solid var(--rule-strong);
+  background:var(--panel);margin:18px 0 26px}
+.stat{padding:16px 18px;border-right:1px solid var(--rule)}
+.stat:last-child{border-right:none}
+.stat .v{font-family:"JetBrains Mono",monospace;font-size:25px;font-weight:500;display:block;line-height:1.2}
+.stat .k{font-size:12px;color:var(--muted);margin-top:4px;display:block}
+/* tables */
+.tw{overflow-x:auto;border:1px solid var(--rule-strong);background:var(--panel);margin:16px 0}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+thead th{text-align:left;padding:10px 13px;font-weight:600;font-size:12px;color:var(--muted);
+  border-bottom:1px solid var(--rule-strong);white-space:nowrap;background:var(--ground);cursor:pointer;user-select:none}
+thead th:hover{color:var(--ink)}
+tbody td{padding:9px 13px;border-bottom:1px solid var(--rule);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr.click{cursor:pointer}tbody tr.click:hover{background:var(--primary-soft)}
+td.num{text-align:right;font-family:"JetBrains Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.bar{display:block}
+.tier{font-family:"JetBrains Mono",monospace;font-weight:600}
+.tier.A{color:var(--primary)}.tier.B{color:var(--slate)}.tier.C{color:var(--muted)}
+.pill{font-size:11px;padding:2px 8px;border-radius:2px;font-weight:500;white-space:nowrap;display:inline-block}
+.pill.v3{background:var(--primary-soft);color:var(--primary)}
+.pill.v1{background:var(--oxide-soft);color:var(--oxide)}
+.pill.gov{background:var(--slate-soft);color:var(--slate)}
+.pill.gray{background:var(--ground);color:var(--muted);border:1px solid var(--rule)}
+/* notes */
+.note{border-left:3px solid var(--primary);background:var(--panel);padding:16px 20px;margin:20px 0;max-width:82ch}
+.note.warn{border-left-color:var(--oxide)}
+.note h4{margin-top:0}.note p:last-child{margin-bottom:0}
+.sub{font-size:13px;color:var(--muted);max-width:82ch}
+/* controls */
+.ctrl{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0}
+select,input[type=text]{font:inherit;font-size:13.5px;padding:6px 10px;border:1px solid var(--rule-strong);
+  background:var(--panel);border-radius:2px;color:var(--ink)}
+button.act{font:inherit;font-size:13.5px;padding:7px 15px;border:1px solid var(--primary);background:var(--primary);
+  color:#fff;border-radius:2px;cursor:pointer}
+button.act:hover{background:#26593D}
+button.act.ghost{background:var(--panel);color:var(--primary)}
+button.act.ghost:hover{background:var(--primary-soft)}
+/* drop zone */
+.drop{border:2px dashed var(--rule-strong);background:var(--panel);padding:44px 24px;text-align:center;
+  border-radius:3px;margin:18px 0;transition:.15s}
+.drop.over{border-color:var(--primary);background:var(--primary-soft)}
+.drop .big{font-family:Fraunces,serif;font-size:20px;margin-bottom:6px}
+/* weights */
+.wrow{display:flex;align-items:center;gap:12px;margin:9px 0;max-width:620px}
+.wrow label{flex:0 0 250px;font-size:13.5px}
+.wrow input[type=range]{flex:1;accent-color:var(--primary)}
+.wrow .val{flex:0 0 46px;text-align:right;font-family:"JetBrains Mono",monospace;font-size:13px}
+/* detail */
+.detail{background:var(--panel);border:1px solid var(--rule-strong);padding:20px 24px;margin:16px 0}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:5px 16px;font-size:13.5px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:"JetBrains Mono",monospace;font-size:13px}
+.contrib{display:flex;align-items:center;gap:9px;margin:5px 0;font-size:13px}
+.contrib .nm{flex:0 0 210px}
+.contrib .bx{flex:1;height:13px;background:var(--rule);position:relative}
+.contrib .bx i{position:absolute;left:0;top:0;bottom:0;background:var(--primary)}
+.contrib .pc{flex:0 0 52px;text-align:right;font-family:"JetBrains Mono",monospace}
+ul,ol{max-width:78ch;padding-left:20px}li{margin-bottom:6px}
+.log{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--panel);
+  border:1px solid var(--rule);padding:12px 14px;max-height:220px;overflow:auto;margin:14px 0}
+.log div{padding:1px 0;color:var(--muted)}
+.log div.ok{color:var(--primary)}.log div.err{color:var(--oxide)}
+@media(max-width:720px){.wrap{padding:0 16px}.wrow label{flex:0 0 150px}.kv{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="wrap">
+  <div class="top">
+    <div class="brand">Avocado Health <span>· RHTP applicant pipeline</span></div>
+    <div class="live">
+      <span><span class="dot" id="dotData"></span> <span id="stData">loading</span></span>
+      <span><span class="dot" id="dotLive"></span> <span id="stLive">USAspending idle</span></span>
+      <span><span class="dot" id="dotStore"></span> <span id="stStore">store idle</span></span>
+    </div>
+  </div>
+  <nav>
+    <button class="on" data-v="pipeline">Pipeline</button>
+    <button data-v="states">States</button>
+    <button data-v="contacts">Contacts</button>
+    <button data-v="upload">Add briefing</button>
+    <button data-v="algo">Algorithm</button>
+    <button data-v="sources">Sources</button>
+  </nav>
+ </div>
+</header>
+
+<main><div class="wrap">
+
+<!-- PIPELINE -->
+<section class="view on" id="v-pipeline">
+  <h2>Ranked targets</h2>
+  <p class="sub">Every organization surfaced by a Civic Operator briefing, scored against the
+  live funding picture. Click a row for the full score decomposition.</p>
+  <div id="covBanner"></div>
+  <div id="staleBanner"></div>
+  <div class="stats" id="pipeStats"></div>
+  <div class="ctrl">
+    <select id="fState"><option value="">All states</option></select>
+    <select id="fSeg"><option value="">All segments</option></select>
+    <select id="fPlay"><option value="">All plays</option><option value="applicant">Downstream (applicant)</option>
+    <option value="channel">Channel</option><option value="issuer">Upstream (issuer)</option></select>
+    <select id="fTier"><option value="">All tiers</option><option>A</option><option>B</option><option>C</option></select>
+    <button class="act ghost" id="btnCov">Covered states only</button>
+    <button class="act ghost" id="btnCsv">Export CSV</button>
+  </div>
+  <div class="tw"><table id="tPipe">
+    <thead><tr>
+      <th data-s="score">Score</th><th data-s="tier">Tier</th><th data-s="org">Organization</th>
+      <th data-s="segLabel">Segment</th><th data-s="state">St</th>
+      <th data-s="playLabel">Play</th><th data-s="reach">Reach</th>
+      <th data-s="urgency">Urgency</th><th data-s="eav">Exp. value</th>
+      <th data-s="nContacts">Contacts</th><th data-s="bestRole">Entry point</th>
+      <th data-s="source">Found via</th>
+    </tr></thead><tbody></tbody></table></div>
+  <div id="pipeDetail"></div>
+</section>
+
+<!-- STATES -->
+<section class="view" id="v-states">
+  <h2>State opportunity index</h2>
+  <p class="sub">All 50 states, FY26 awards verbatim from CMS. The discretionary column is the
+  part of each award CMS assigned above the equal statutory share — which makes it CMS's own
+  dollar-denominated scoring of that state's rural need and plan strength.</p>
+  <div class="stats" id="stateStats"></div>
+  <div class="ctrl">
+    <button class="act ghost" id="btnFetch">Refresh subawards from USAspending</button>
+    <button class="act ghost" id="btnCov2">Covered states only</button>
+    <span class="sub" id="fetchNote" style="margin:0"></span>
+  </div>
+  <div class="log" id="fetchLog" style="display:none"></div>
+  <div class="tw"><table id="tStates">
+    <thead><tr>
+      <th data-s="soi">SOI</th><th data-s="name">State</th><th data-s="award">FY26 award</th>
+      <th data-s="discretionary">Discretionary</th><th data-s="moved">Subawarded</th>
+      <th data-s="remainder">Remainder</th><th data-s="recipients">Recips</th>
+      <th data-s="activity">Signals</th><th>Coverage</th><th>Subawards</th>
+    </tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- CONTACTS -->
+<section class="view" id="v-contacts">
+  <h2>Contacts and email-pattern resolution</h2>
+  <p class="sub">Civic Operator's "not published" flag means it could not cite a public page for
+  a row, not that the address is missing. So the useful operation is conformance: each unsourced
+  address is checked against the pattern its domain's <em>sourced</em> addresses establish.
+  Conforming is corroboration. Deviating is the row worth a human minute before it enters a
+  sequence. Inferred addresses, where nothing was published at all, are labelled as inferred and
+  never merged into the verified column.</p>
+  <div class="stats" id="ctStats"></div>
+  <h3>Domain patterns learned</h3>
+  <div class="tw"><table id="tDomains">
+    <thead><tr><th>Domain</th><th>Inferred pattern</th><th data-s="n">Confirming</th>
+    <th>Confidence</th><th>Org</th></tr></thead><tbody></tbody></table></div>
+  <h3>All contacts</h3>
+  <div class="ctrl">
+    <select id="fRole"><option value="">All roles</option><option>economic_buyer</option>
+    <option>champion</option><option>gatekeeper</option></select>
+    <select id="fVer"><option value="">All</option><option value="3">Source-verified</option>
+    <option value="1">Unverified</option></select>
+  </div>
+  <div class="tw"><table id="tContacts">
+    <thead><tr><th data-s="name">Name</th><th data-s="title">Title</th><th data-s="role">Role</th>
+    <th data-s="organization">Organization</th><th data-s="state">St</th><th>Email</th>
+    <th data-s="verification">Source</th><th>Pattern check</th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<!-- UPLOAD -->
+<section class="view" id="v-upload">
+  <h2>Add a Civic Operator briefing</h2>
+  <p class="sub">Drop the PDF. It is parsed in your browser, stored as an immutable dated
+  snapshot, and diffed against the previous edition. Nothing is uploaded anywhere.</p>
+  <div class="drop" id="drop">
+    <div class="big">Drop a briefing PDF here</div>
+    <div class="sub" style="margin:0 auto">or <label style="color:var(--primary);cursor:pointer;text-decoration:underline">
+      choose a file<input type="file" id="file" accept=".pdf,.html,.htm" style="display:none"></label></div>
+  </div>
+  <div class="log" id="upLog"></div>
+  <h3>Stored editions</h3>
+  <div class="tw"><table id="tEditions">
+    <thead><tr><th>Edition</th><th class="num">Contacts</th><th class="num">Opportunities</th>
+    <th class="num">Verified</th><th>Source</th><th></th></tr></thead><tbody></tbody></table></div>
+  <h3>Change events since the previous edition</h3>
+  <div class="tw"><table id="tDiff">
+    <thead><tr><th class="num">Priority</th><th>Event</th><th>Who / what</th><th>Detail</th>
+    </tr></thead><tbody></tbody></table></div>
+  <div id="diffEmpty" class="sub">Upload a second edition to see deltas. Each edition you add
+  makes the next diff sharper, and the RFI-to-solicitation lag estimate in the algorithm tab
+  becomes computable once you have paired events.</div>
+</section>
+
+<!-- ALGORITHM -->
+<section class="view" id="v-algo">
+  <h2>How the score is computed</h2>
+  <p>Two scores, both on real inputs only. Move the weights and every table updates; they are
+  saved with your data so the model you ship is the model you tuned.</p>
+
+  <h3>1 · State opportunity index</h3>
+  <p>A state is attractive when it has money that has not moved yet, when CMS itself judged its
+  rural need to be high, and when it is visibly active in your feed.</p>
+  <h4>Remainder — money still to be awarded</h4>
+  <p><code>remainder = FY26 award − observed first-tier subawards</code>. A subtraction, not an
+  opinion. Kentucky has moved about 9.6% of its award across 19 recipients; Idaho and Missouri
+  have no observed first-tier movement at all, so every dollar is still ahead of them. States
+  with no observation are scored as unmoved and flagged, because absence of a record is not
+  evidence of absence of an award.</p>
+  <h4>Discretionary intensity — CMS's own rural-need score</h4>
+  <p>Public Law 119-21 splits the $10B annual pool in half: 50% divided equally among approved
+  states ($100M each), 50% allocated by CMS on rurality, rural health system condition, state
+  policy actions, and expected impact. So <code>award − $100,000,000</code> <em>is</em> CMS's
+  scoring of that state, denominated in dollars. Texas scores $181.3M, New Jersey $47.3M — a
+  3.8× spread that required no modelling and no proxy. This is the single most useful derived
+  quantity in the system and it comes free with the award table.</p>
+  <h4>Signal activity and reachability</h4>
+  <p>Distinct RHTP solicitations observed for the state across your stored editions, and the
+  share of its contacts that carry a public source. Both grow as you add briefings.</p>
+
+  <h3>2 · Target score</h3>
+  <p>Per organization, five factors, each on [0,1]:</p>
+  <ul>
+    <li><strong>ICP fit</strong> — segment mapped to the tiering in the ICP matrix. Tier 1
+    (CBO, perinatal, ABA, state associations) scores 1.0; FQHC and GOV 0.8; rural hospitals 0.6;
+    school districts and universities 0.35.</li>
+    <li><strong>State opportunity</strong> — the SOI above, normalised.</li>
+    <li><strong>Reach</strong> — best contact verification level, plus a bonus when both an
+    economic buyer and a champion are mapped, because a named champion is the actual entry
+    point and a buyer alone is a cold call with a title.</li>
+    <li><strong>Urgency</strong> — days to the nearest deadline attached to that organization's
+    opportunity. Peaks in the 14–150 day band. Under 7 days you are too late to shape an
+    application; past 240 days nobody is deciding yet.</li>
+    <li><strong>Role fit</strong> — whether the governing solicitation permits subgrants or
+    partnerships, extracted from the notice text. Idaho's school-based hub RFA explicitly allows
+    districts to subgrant to community organizations, which is Avocado's slot exactly.</li>
+  </ul>
+  <p>Expected value multiplies the score by the segment ACV midpoint from the ICP matrix and
+  discounts by the segment's typical cycle length at 35% a year, so a $400K state deal on a
+  12-month cycle does not automatically outrank a $37.5K CBO deal that closes in four months.</p>
+
+  <div class="ctrl" style="margin-top:22px"><strong style="font-size:14px">Weights</strong></div>
+  <div id="weights"></div>
+  <div class="ctrl"><button class="act ghost" id="btnReset">Reset to defaults</button></div>
+
+  <h3>What this is not</h3>
+  <div class="note warn">
+    <p><strong>There is no trained model in this file, deliberately.</strong> A gradient-boosted
+    ranker needs labelled history — solicitations with known applicants and known winners — and
+    RHTP has produced exactly one round of first-tier awards so far. Training on that would
+    produce a model fit to nineteen Kentucky recipients and dressed up as intelligence.</p>
+    <p>What runs here is a transparent weighted model over real observed quantities. Every score
+    decomposes into named contributions you can read and argue with. When the award history
+    exists — roughly two more subaward cycles, or a backfill across adjacent assistance listings
+    93.505, 93.926 and 93.994 — the learned ranker in the companion spec drops into the same
+    interface and the scoring tab becomes its explanation rather than its replacement.</p>
+    <p>Saying so is not a limitation to hide. A CEO who is told "the model learned this" about a
+    number that came from nineteen data points will stop trusting the next thing you show him.</p>
+  </div>
+</section>
+
+<!-- SOURCES -->
+<section class="view" id="v-sources">
+  <h2>Where every number comes from</h2>
+  <div class="tw"><table id="tSources">
+    <thead><tr><th>Dataset</th><th>Records</th><th>Source</th><th>Retrieved</th><th>Status</th>
+    </tr></thead><tbody></tbody></table></div>
+  <h3>Live refresh</h3>
+  <p class="sub">The States tab tries to read current subaward records directly from the
+  USAspending API. If your browser blocks that request, run <code>fetch_live.py</code> from the
+  source bundle and drop the resulting JSON on the Add-briefing tab — same result, one extra
+  step. The dashboard never silently substitutes stale data for live data; the indicator in the
+  header always shows which you are looking at.</p>
+  <h3>Handling</h3>
+  <p class="sub">Contact rows are MNDA-covered and contain named individuals at public agencies
+  and private organizations. Everything stays in your browser's local storage. Nothing is sent
+  to any server, including by the PDF parser, which runs client-side.</p>
+</section>
+
+</div></main>
+
+<script>
+/* pdf.js is optional. If the CDN is blocked, PDF ingest degrades to a clear
+   message and every other tab keeps working. A dashboard that dies because one
+   script tag failed is worse than one that tells you which feature is offline. */
+const PDFOK = typeof pdfjsLib !== 'undefined';
+if (PDFOK) pdfjsLib.GlobalWorkerOptions.workerSrc =
+  'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+/* ---------- real data payload (embedded) ---------- */
+const DATA = {"generated": "2026-09-13", "states": [{"code": "TX", "name": "Texas", "award": 281319361, "discretionary": 181319361, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "AK", "name": "Alaska", "award": 272174856, "discretionary": 172174856, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "CA", "name": "California", "award": 233639308, "discretionary": 133639308, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MT", "name": "Montana", "award": 233509359, "discretionary": 133509359, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "OK", "name": "Oklahoma", "award": 223476949, "discretionary": 123476949, "moved": 20694573.33, "recipients": 4, "prime_award_id": "RHTCMS332048", "remainder": 202782375.67000002, "observed": true, "source": "Civic Operator 2026-09-10, citing USAspending first-tier subaward report"}, {"code": "KS", "name": "Kansas", "award": 221898008, "discretionary": 121898008, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "GA", "name": "Georgia", "award": 218862170, "discretionary": 118862170, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "NE", "name": "Nebraska", "award": 218529075, "discretionary": 118529075, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MO", "name": "Missouri", "award": 216276818, "discretionary": 116276818, "moved": 0.0, "recipients": 0, "prime_award_id": null, "remainder": 216276818.0, "observed": true, "source": "Civic Operator 2026-09-10; 27 hub anchors named, no subawards published"}, {"code": "NC", "name": "North Carolina", "award": 213008356, "discretionary": 113008356, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "KY", "name": "Kentucky", "award": 212905591, "discretionary": 112905591, "moved": 20426889.0, "recipients": 19, "prime_award_id": "RHTCMS332079", "remainder": 192478702.0, "observed": true, "source": "Civic Operator 2026-09-03, citing USAspending"}, {"code": "NY", "name": "New York", "award": 212058208, "discretionary": 112058208, "moved": 76200000.0, "recipients": 56, "prime_award_id": null, "remainder": 135858208.0, "observed": true, "source": "NYSDOH RCHI Awardees List, announced 2026-09-04"}, {"code": "NM", "name": "New Mexico", "award": 211484741, "discretionary": 111484741, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "FL", "name": "Florida", "award": 209938195, "discretionary": 109938195, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "IA", "name": "Iowa", "award": 209040064, "discretionary": 109040064, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "AR", "name": "Arkansas", "award": 208779396, "discretionary": 108779396, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "LA", "name": "Louisiana", "award": 208374448, "discretionary": 108374448, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "IN", "name": "Indiana", "award": 206927897, "discretionary": 106927897, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "TN", "name": "Tennessee", "award": 206888882, "discretionary": 106888882, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MS", "name": "Mississippi", "award": 205907220, "discretionary": 105907220, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "WY", "name": "Wyoming", "award": 205004743, "discretionary": 105004743, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "NH", "name": "New Hampshire", "award": 204016550, "discretionary": 104016550, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "WI", "name": "Wisconsin", "award": 203670005, "discretionary": 103670005, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "AL", "name": "Alabama", "award": 203404327, "discretionary": 103404327, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "OH", "name": "Ohio", "award": 202030262, "discretionary": 102030262, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "CO", "name": "Colorado", "award": 200105604, "discretionary": 100105604, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "SC", "name": "South Carolina", "award": 200030252, "discretionary": 100030252, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "WV", "name": "West Virginia", "award": 199476099, "discretionary": 99476099, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "ND", "name": "North Dakota", "award": 198936970, "discretionary": 98936970, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "OR", "name": "Oregon", "award": 197271578, "discretionary": 97271578, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "UT", "name": "Utah", "award": 195743566, "discretionary": 95743566, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "VT", "name": "Vermont", "award": 195053740, "discretionary": 95053740, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "IL", "name": "Illinois", "award": 193418216, "discretionary": 93418216, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "PA", "name": "Pennsylvania", "award": 193294054, "discretionary": 93294054, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MN", "name": "Minnesota", "award": 193090618, "discretionary": 93090618, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "ME", "name": "Maine", "award": 190008051, "discretionary": 90008051, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "VA", "name": "Virginia", "award": 189544888, "discretionary": 89544888, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "SD", "name": "South Dakota", "award": 189477607, "discretionary": 89477607, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "HI", "name": "Hawaii", "award": 188892440, "discretionary": 88892440, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "ID", "name": "Idaho", "award": 185974368, "discretionary": 85974368, "moved": 1198736.0, "recipients": 1, "prime_award_id": "RHTCMS332084", "remainder": 184775632.0, "observed": true, "source": "Civic Operator 2026-09-10, citing TAGGS RHTCMS332084"}, {"code": "WA", "name": "Washington", "award": 181257515, "discretionary": 81257515, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "NV", "name": "Nevada", "award": 179931608, "discretionary": 79931608, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MI", "name": "Michigan", "award": 173128201, "discretionary": 73128201, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MD", "name": "Maryland", "award": 168180838, "discretionary": 68180838, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "AZ", "name": "Arizona", "award": 166988956, "discretionary": 66988956, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "MA", "name": "Massachusetts", "award": 162005238, "discretionary": 62005238, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "DE", "name": "Delaware", "award": 157394964, "discretionary": 57394964, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "RI", "name": "Rhode Island", "award": 156169931, "discretionary": 56169931, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "CT", "name": "Connecticut", "award": 154249106, "discretionary": 54249106, "moved": null, "recipients": null, "prime_award_id": null, "remainder": null, "observed": false, "source": null}, {"code": "NJ", "name": "New Jersey", "award": 147250806, "discretionary": 47250806, "moved": 5756241.0, "recipients": 1, "prime_award_id": null, "remainder": 141494565.0, "observed": true, "source": "NJ RHT funding allocations, 2026-07-31"}], "segments": {"RHS": {"label": "Rural hospital / health system", "acv": 62500, "cycle_months": 15, "tier": 2}, "FQHC": {"label": "FQHC / community health center", "acv": 220000, "cycle_months": 6.5, "tier": 1.5}, "CBO": {"label": "CBO / parent advocacy", "acv": 37500, "cycle_months": 4.5, "tier": 1}, "OB": {"label": "Perinatal / maternal network", "acv": 60000, "cycle_months": 4.5, "tier": 1}, "GOV": {"label": "State / local public health", "acv": 400000, "cycle_months": 12, "tier": 1.5}, "SCH": {"label": "School district / early childhood", "acv": 50000, "cycle_months": 6, "tier": 3}, "ASSOC": {"label": "State association (channel)", "acv": 0, "cycle_months": 3, "tier": 1}, "ABA": {"label": "ABA / behavioral health clinic", "acv": 45000, "cycle_months": 2, "tier": 1}, "EDU": {"label": "University / academic", "acv": 50000, "cycle_months": 9, "tier": 3}}, "editions": [{"edition": "2026-09-03", "contacts": [{"opportunity": "Idaho School-Based Family Support Hubs", "name": "No named individual published", "title": "Program inbox", "organization": "Idaho Dept. of Health and Welfare, RHTP", "email": "IdahoRHTP@dhw.idaho.gov", "phone": "None published", "source_url": "https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health", "verification": 3, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho School-Based Family Support Hubs / RHTPHIS1", "name": "Amy Hirtle", "title": "Director, State Office of Rural Health; Bureau of Rural Health and Community Support", "organization": "Idaho Dept. of Health and Welfare", "email": "amy.hirtle@dhw.idaho.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho School-Based Family Support Hubs / RHTPHIS1", "name": "Juliet Charron", "title": "Director", "organization": "Idaho Dept. of Health and Welfare", "email": "juliet.charron@dhw.idaho.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho School-Based Family Support Hubs / RHTPHIS1", "name": "Alex Prado", "title": "Primary Care Office Manager; RHTP Point of Contact", "organization": "Idaho Dept. of Health and Welfare", "email": null, "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "Steven Hoffman", "title": "No title published", "organization": "Missouri Dept. of Social Services, Rural Health Transformation Office", "email": "Steven.Hoffman@dss.mo.gov", "phone": "None published", "source_url": "https://dss.mo.gov/mhd/rural-health", "verification": 3, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "MO"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "No named individual published", "title": "Program inbox", "organization": "Missouri DSS Rural Health Transformation Office", "email": "DSS.RHTP@dss.mo.gov", "phone": "None published", "source_url": "https://dss.mo.gov/mhd/rural-health", "verification": 3, "edition": "2026-09-03", "segment": null, "segment_confirmed": false, "state": "MO"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "Joe Miller", "title": "Director, Rural Health Transformation Office", "organization": "Missouri DSS Rural Health Transformation Office", "email": "joe.miller@mo.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": null, "segment_confirmed": false, "state": "MO"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "Jessica Bax", "title": "RHT Program", "organization": "Missouri Dept. of Social Services", "email": "jessica.bax@dss.mo.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "MO"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "Baylee Watts", "title": "No title on record", "organization": "Missouri Dept. of Social Services", "email": "baylee.watts@dss.mo.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "MO"}, {"opportunity": "Missouri RFI 0000000012SL", "name": "Amy Raymo", "title": "Assistant Director, Division of Purchasing", "organization": "Missouri Office of Administration", "email": "amy.raymo@oa.mo.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "MO"}, {"opportunity": "Kentucky subaward cohort", "name": "No named individual published", "title": "Program inbox", "organization": "Kentucky Cabinet for Health and Family Services, Rural Health Transformation Team", "email": "ruralhealthplan@ky.gov", "phone": "None published", "source_url": "https://ruralhealthplan.ky.gov/Pages/index.aspx", "verification": 3, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky Community Health Worker RFA \u2014 closed 2026-08-05", "name": "Ashleyn Gibson", "title": "No title published", "organization": "Kentucky Cabinet for Health and Family Services", "email": "ashleyn.gibson@ky.gov", "phone": "None published", "source_url": "https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf", "verification": 3, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Andrew Yunt", "title": "Deputy Commissioner, CHFS; Project Director and Authorized Official, RHTP award RHTCMS332079", "organization": "Kentucky Cabinet for Health and Family Services", "email": "andrew.yunt@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Tom Walton", "title": "Director, Rural Health Transformation Program", "organization": "Kentucky Cabinet for Health and Family Services", "email": "tom.walton@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Dr. Steven Stack", "title": "Secretary", "organization": "Kentucky Cabinet for Health and Family Services", "email": "steven.stack@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Robbie Hume", "title": "Crisis to Care Interim Lead", "organization": "Kentucky Department for Public Health", "email": "robbie.hume@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Jimmie Hampton", "title": "Workforce Development Specialist, Crisis to Care", "organization": "Kentucky Department for Public Health", "email": "jimmie.hampton@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Marsha Deaton", "title": "Program Lead, Rooted in Health", "organization": "Kentucky Department for Public Health", "email": "marsha.deaton@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Pam Stein", "title": "RHTP Dental Hygiene RFA point of contact", "organization": "Kentucky Department for Public Health", "email": "pam.stein@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "John Ard", "title": "Executive Director (office unconfirmed)", "organization": "Commonwealth of Kentucky", "email": "john.ard@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": false, "state": "KY"}, {"opportunity": "Kentucky subaward cohort", "name": "Philip Heleringer", "title": "Executive Director (office unconfirmed)", "organization": "Commonwealth of Kentucky", "email": "philip.heleringer@ky.gov", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": false, "state": "KY"}, {"opportunity": "Kentucky subaward cohort \u2014 University of Louisville affiliate", "name": "Charles Sowards", "title": "Assistant Chief Executive Officer", "organization": "UofL Health \u2013 Shelbyville Hospital", "email": "charles.sowards@uoflhealth.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "KY"}, {"opportunity": "Idaho RHTPHIS1", "name": "No named individual published", "title": "Program inbox", "organization": "Idaho Dept. of Health and Welfare, RHTP", "email": "IdahoRHTP@dhw.idaho.gov", "phone": "None published", "source_url": "https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health", "verification": 3, "edition": "2026-09-03", "segment": "GOV", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho RHTPHIS1", "name": "Kyle Rooks", "title": "Government Affairs Director", "organization": "Idaho Community Health Centers Association", "email": "krooks@idahochc.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ASSOC", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho RHTPHIS1", "name": "Toni Lawson", "title": "VP of Government Relations", "organization": "Idaho Hospital Association", "email": "tlawson@teamiha.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ASSOC", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho RHTPHIS1", "name": "Brian Whitlock", "title": "President and CEO", "organization": "Idaho Hospital Association", "email": null, "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ASSOC", "segment_confirmed": true, "state": "ID"}, {"opportunity": "Idaho RHTPHIS1", "name": "Katrina Hoff", "title": "Director, Southwest Idaho AHEC", "organization": "Jannus", "email": "khoff@jannus.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "CBO", "segment_confirmed": true, "state": "ID"}, {"opportunity": "MO Hub 1\u20132", "name": "Mark Laney", "title": "CEO", "organization": "Mosaic Life Care", "email": "mark.laney@mymlc.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 1\u20132", "name": "Karan Mohan", "title": "Chief Quality Officer", "organization": "Mosaic Life Care", "email": "karan.mohan@mymlc.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 3", "name": "Tina Gillespie", "title": "Chief Executive Officer", "organization": "Harrison County Community Hospital", "email": "tgillespie@hcchospital.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 3", "name": "Nikki Hendren", "title": "Chief Operating Officer", "organization": "Harrison County Community Hospital", "email": "nhendren@hcchospital.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 5", "name": "Amanda Arnold", "title": "Chief Operating Officer", "organization": "HCC Network", "email": "amanda.arnold@hccnetwork.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "FQHC", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 12", "name": "Melissa Hunter", "title": "Chief Operating Officer / Chief Nursing Officer", "organization": "Lake Regional Health System", "email": "mhunter@lakeregional.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 12", "name": "Jaren Pippitt", "title": "Chief Strategy Officer", "organization": "Lake Regional Health System", "email": "jpippitt@lakeregional.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 16", "name": "Gary Cloud", "title": "Vice President, Strategic Partnerships", "organization": "A.T. Still University of Health Sciences \u2013 Kirksville", "email": "gcloud@atsu.edu", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "EDU", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 18", "name": "Wendy Harrington", "title": "Vice President of Development", "organization": "Hannibal Regional Health Center", "email": "wendy.harrington@hannibalregional.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 19", "name": "Brock Lough", "title": "Chief Executive Officer", "organization": "Arthur Center Community Health", "email": "blough@arthurcenter.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "FQHC", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 19", "name": "Kristen Fishback", "title": "Deputy Director", "organization": "Arthur Center Community Health", "email": "kfishback@arthurcenter.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "FQHC", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 19", "name": "Ilda Guambe", "title": "Grants and Informatics Coordinator", "organization": "Arthur Center Community Health", "email": "iguambe@arthurcenter.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "FQHC", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 21", "name": "Cindi Engemann", "title": "Chief Financial Officer", "organization": "Hermann Area District Hospital", "email": "cengemann@hadh.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 22", "name": "Jana Cook", "title": "Chief Operating Officer", "organization": "Phelps Health", "email": "cookj@phelpshealth.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "RHS", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 24", "name": "Crystal Slayton", "title": "MCO Outreach Coordinator", "organization": "Missouri Highlands Health Care", "email": "cslayton@mohigh.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "FQHC", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 25", "name": "Lisa Tolbert", "title": "Chief Operations Officer", "organization": "Community Counseling Center", "email": "ltolbert@cccntr.com", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ABA", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 26", "name": "Nadia Moreno", "title": "Program Director", "organization": "FCC Behavioral Health", "email": "nadia.moreno@fccinc.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ABA", "segment_confirmed": true, "state": "MO"}, {"opportunity": "MO Hub 26", "name": "Seth Roso", "title": "Chief Administrative Officer", "organization": "FCC Behavioral Health", "email": "sethr@fccinc.org", "phone": "None on record", "source_url": null, "verification": 1, "edition": "2026-09-03", "segment": "ABA", "segment_confirmed": true, "state": "MO"}], "opportunities": [{"title": "Idaho RHTP School-Based Family Support Hubs", "issuer": "Idaho Department of Health and Welfare.", "due_raw": "September 8, 2026", "urls": ["https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health", "https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?dbid=0&amp;id=37264&amp;repo=PUBLIC-DOCUMENTS"], "edition": "2026-09-03"}, {"title": "Missouri RHTP Request for Information \u2014 Virtual Care Expansion", "issuer": "Missouri Department of Social Services, Rural Health Transformation Office.", "due_raw": "September 9, 2026", "urls": ["https://dss.mo.gov/mhd/rural-health"], "edition": "2026-09-03"}, {"title": "Kentucky RHTP First-Tier Subaward Cohort", "issuer": "Kentucky Cabinet for Health and Family Services.", "due_raw": null, "urls": ["https://www.usaspending.gov/award/ASST_NON_RHTCMS332079_075/", "https://ruralhealthplan.ky.gov/Pages/index.aspx", "https://ruralhealthplan.ky.gov/Pages/Request_For_Applications.aspx", "https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf", "https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-170"], "edition": "2026-09-03"}, {"title": "Idaho RHTP Healthcare Infrastructure Support (RHTPHIS1)", "issuer": "Idaho Department of Health and Welfare.", "due_raw": "September 13, 2026 at 11:59 p.m. MDT \u2014 10 days", "urls": ["https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health", "https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?id=37354&amp;dbid=0&amp;repo=PUBLIC-DOCUMENTS"], "edition": "2026-09-03"}], "source_file": "2026-09-03-avocado-verified-intelligence.html"}, {"edition": "2026-09-10", "contacts": [{"name": "Brandon Rivenbark", "title": "Rural Hospital Program Manager, Virginia Department of Health", "organization": "Virginia Department of Health", "email": "brandon.rivenbark@vdh.virginia.gov", "phone": "(804) 835-2618", "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA Innovative Maternal Care (VDH-26-705-0387)"}, {"name": "Michael Parsons", "title": "Director of Programs, Virginia Foundation for Healthy Youth", "organization": "Virginia Foundation for Healthy Youth", "email": "Michael.Parsons@healthyyouthva.org", "phone": null, "state": "VA", "segment": "CBO", "verification": 3, "opportunity": "VA Live Well, Together \u2014 Consumer Technology"}, {"name": "Ben Barber", "title": "Chief Rural Health Officer, Virginia Health Care Foundation", "organization": "Virginia Health Care Foundation", "email": "ben@vhcf.org", "phone": null, "state": "VA", "segment": "CBO", "verification": 3, "opportunity": "VA CareIQ Provider Productivity"}, {"name": "Marcus Divers", "title": "Rural Health Project Manager, Virginia Department of Medical Assistance Services", "organization": "Virginia Department of Medical Assistance Services", "email": "Marcus.divers@dmas.virginia.gov", "phone": null, "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA CareIQ Provider Productivity"}, {"name": "Vicki Humphreys", "title": "Contact for grant applications, VHHA Foundation", "organization": "VHHA Foundation", "email": "vhumphreys@vhha.com", "phone": null, "state": "VA", "segment": "ASSOC", "verification": 3, "opportunity": "VA CareIQ Remote Patient Monitoring"}, {"name": "Heather Neil", "title": "Program Manager, VHHA Foundation", "organization": "VHHA Foundation", "email": "hneil@vhha.com", "phone": null, "state": "VA", "segment": "ASSOC", "verification": 3, "opportunity": "VA CareIQ Remote Patient Monitoring"}, {"name": "Brandon Davis", "title": "Northern Shenandoah Valley Regional Commission", "organization": "Northern Shenandoah Valley Regional Commission", "email": "bdavis@nsvregion.org", "phone": null, "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA Mobile & Hybrid Care"}, {"name": "Isabelle Drayer", "title": "Agency Program Contact, Virginia Department of Medical Assistance Services", "organization": "Virginia Department of Medical Assistance Services", "email": "isabelle.drayer@dmas.virginia.gov", "phone": null, "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA Mobile & Hybrid Care"}, {"name": "Joel Reagan", "title": "Virginia Department of Medical Assistance Services", "organization": "Virginia Department of Medical Assistance Services", "email": "joel.reagan@dmas.virginia.gov", "phone": null, "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA Mobile & Hybrid Care"}, {"name": "Heidi Hertz", "title": "Director, Rural Health Transformation, Office of the Governor of Virginia", "organization": "Office of the Governor of Virginia", "email": "Heidi.Hertz@governor.virginia.gov", "phone": null, "state": "VA", "segment": "GOV", "verification": 3, "opportunity": "VA RHTP program, all Virginia tracks"}, {"name": "No named individual published", "title": "Program inbox", "organization": "Idaho Department of Health and Welfare, RHTP", "email": "IdahoRHTP@dhw.idaho.gov", "phone": null, "state": "ID", "segment": "GOV", "verification": 3, "opportunity": "ID Healthcare Infrastructure Support"}, {"name": "Travis Boucher", "title": "Vice President, Rural Health Transformation, Foundation for Healthy Communities", "organization": "Foundation for Healthy Communities", "email": null, "phone": "(603) 415-4258", "state": "NH", "segment": "ASSOC", "verification": 1, "opportunity": "NH Rural Primary Care Transformation (GO-NORTH)", "note": "Email hidden behind email protection; none constructed"}, {"name": "No named individual published", "title": "Program inbox", "organization": "Foundation for Healthy Communities", "email": "GO-NORTH-FHC@healthynh.org", "phone": null, "state": "NH", "segment": "ASSOC", "verification": 3, "opportunity": "NH Rural Primary Care Transformation (GO-NORTH)"}, {"name": "No named individual published", "title": "Program inbox", "organization": "Minnesota Department of Health, Office of Rural Health and Primary Care", "email": "rural.transformation.mdh@state.mn.us", "phone": "651-201-3838", "state": "MN", "segment": "GOV", "verification": 3, "opportunity": "MN Rural Telehealth Services RFP"}, {"name": "Zomi Bloom", "title": "State Program Administrator Principal, Minnesota Department of Health", "organization": "Minnesota Department of Health", "email": "grants.ruraltransformation.mdh@state.mn.us", "phone": null, "state": "MN", "segment": "GOV", "verification": 3, "opportunity": "MN Rural Telehealth Services RFP"}, {"name": "Ann Storey", "title": "Director for Healthcare Programs, Illinois Community College Board", "organization": "Illinois Community College Board", "email": "ann.l.storey@illinois.gov", "phone": null, "state": "IL", "segment": "EDU", "verification": 3, "opportunity": "IL ICCB Rural Health ROOTS (Initiative 3B)"}, {"name": "Dana Hawes", "title": "Chief Growth Officer, Comagine Health", "organization": "Comagine Health", "email": null, "phone": "800-949-7536", "state": "ID", "segment": "CBO", "verification": 1, "opportunity": "Comagine Health (partner target)", "note": "Name and title published; no address anywhere on the site; none constructed"}, {"name": "No named individual published", "title": "Program inbox", "organization": "Oklahoma State Department of Health, RHTP", "email": "OklahomaRHTP@health.ok.gov", "phone": null, "state": "OK", "segment": "GOV", "verification": 3, "opportunity": "OK maternal remote patient monitoring"}, {"name": "Tracey Douglas", "title": "Director of Grants Management Financial Services, Oklahoma State Department of Health", "organization": "Oklahoma State Department of Health", "email": "tracey.douglas@health.ok.gov", "phone": "405.590.2108", "state": "OK", "segment": "GOV", "verification": 3, "opportunity": "OK RHTP award administration", "note": "Grants administration, not the program lead"}, {"name": "Jared M. Droze, MHA", "title": "Director of Virtual Care, OSU Medicine", "organization": "Oklahoma State University \u2014 OSU Medicine", "email": null, "phone": "918-200-6960", "state": "OK", "segment": "EDU", "verification": 1, "opportunity": "OK OSU Medicine Virtual Care OB/GYN", "note": "Machine-obfuscated on the page; not reproduced"}, {"name": "Hayley Warren", "title": "Manager of Rural Health, Oklahoma Hospital Association", "organization": "Oklahoma Hospital Association", "email": null, "phone": "(405) 427-9537", "state": "OK", "segment": "ASSOC", "verification": 1, "opportunity": "OK community health worker expansion", "note": "Directory addresses are encrypted links; not reproduced"}, {"name": "No named individual published", "title": "Program inbox", "organization": "New Jersey Department of Human Services, NJ RHT", "email": "mahs.njrht@dhs.nj.gov", "phone": null, "state": "NJ", "segment": "GOV", "verification": 3, "opportunity": "NJ AtlantiCare doula integration model"}, {"name": "No named individual published", "title": "Program inbox", "organization": "New York State Department of Health, RCHI", "email": "rchi@health.ny.gov", "phone": null, "state": "NY", "segment": "GOV", "verification": 3, "opportunity": "NY RCHI awardee cohort", "note": "Karen Madden named in the funding guidance with no contact details"}, {"name": "Elizabeth Green", "title": "ToRCH Program Manager, Bothwell Regional Health Center (Hub 13)", "organization": "Bothwell Regional Health Center", "email": "torch@brhc.org", "phone": "660.826.8833", "state": "MO", "segment": "RHS", "verification": 3, "opportunity": "MO ToRCH Care Hub anchors"}, {"name": "Steven Hoffman", "title": "Named point of contact, RFI 0000000012SL", "organization": "Missouri Department of Social Services", "email": "Steven.Hoffman@dss.mo.gov", "phone": null, "state": "MO", "segment": "GOV", "verification": 3, "opportunity": "MO ToRCH program; MO Virtual Care Expansion follow-on"}], "opportunities": [{"title": "VA Connected to Care \u2014 Innovative Maternal Care (VDH-26-705-0387)", "issuer": "Virginia Department of Health", "state": "VA", "due_raw": "October 6, 2026", "fit": 9, "status": "open", "amount": 11600000, "award_min": 50000, "award_max": 1000000, "subgrants_permitted": true, "technology_allowable": true, "note": "Avocado not an eligible applicant; route is partner to a lead applicant, which the RFA encourages", "edition": "2026-09-10", "urls": []}, {"title": "VA CareIQ Provider Productivity", "issuer": "Virginia Health Care Foundation", "state": "VA", "due_raw": "September 14, 2026", "fit": 7, "status": "open", "amount": 8000000, "subgrants_permitted": false, "technology_allowable": true, "note": "Three funded categories all provider-facing; patient-facing neither listed nor excluded", "edition": "2026-09-10", "urls": []}, {"title": "MN Rural Telehealth Services RFP (SWIFT 2000018606)", "issuer": "Minnesota Department of Health", "state": "MN", "due_raw": "September 14, 2026", "fit": 5, "status": "open", "technology_allowable": true, "edition": "2026-09-10", "urls": []}, {"title": "VA CareIQ Remote Patient Monitoring", "issuer": "VHHA Foundation", "state": "VA", "due_raw": "September 15, 2026", "fit": 7, "status": "open", "amount": 14300000, "technology_allowable": true, "note": "Eligibility conflict unresolved: RFA limits to hospitals and health systems", "edition": "2026-09-10", "urls": []}, {"title": "VA Connected to Care \u2014 Mobile & Hybrid Care (NSVRC)", "issuer": "Northern Shenandoah Valley Regional Commission", "state": "VA", "due_raw": "September 18, 2026", "fit": 7, "status": "open", "amount": 4217563, "subgrants_permitted": true, "technology_allowable": true, "note": "RFA names mobile health technology organizations as eligible applicants", "edition": "2026-09-10", "urls": []}, {"title": "ID Healthcare Infrastructure Support", "issuer": "Idaho Department of Health and Welfare", "state": "ID", "due_raw": "September 18, 2026", "fit": 6, "status": "open", "amount": 97213653, "technology_allowable": true, "note": "Deadline extended from September 13. Technology line $21,954,653", "edition": "2026-09-10", "urls": []}, {"title": "IL ICCB Rural Health ROOTS (Initiative 3B)", "issuer": "Illinois Community College Board", "state": "IL", "due_raw": "September 18, 2026", "fit": 5, "status": "open", "edition": "2026-09-10", "urls": []}, {"title": "NH Rural Primary Care Transformation (GO-NORTH)", "issuer": "Foundation for Healthy Communities", "state": "NH", "due_raw": "October 15, 2026", "fit": 6, "status": "open", "amount": 15500000, "subgrants_permitted": true, "note": "Rolling after October 15; Avocado's route is as partner", "edition": "2026-09-10", "urls": []}, {"title": "ID Behavioral Health Prevention", "issuer": "Idaho Department of Health and Welfare", "state": "ID", "due_raw": null, "fit": 6, "status": "open", "note": "Deadline not published; packet served as an unreadable file", "edition": "2026-09-10", "urls": []}, {"title": "ID SUD Prevention", "issuer": "Idaho Department of Health and Welfare", "state": "ID", "due_raw": null, "fit": 6, "status": "open", "note": "Deadline not published; packet served as an unreadable file", "edition": "2026-09-10", "urls": []}, {"title": "VA Live Well, Together \u2014 Consumer Technology", "issuer": "Virginia Foundation for Healthy Youth", "state": "VA", "due_raw": null, "fit": 9, "status": "forthcoming", "forecast": "Fall 2026", "subgrants_permitted": true, "technology_allowable": true, "note": "The only instrument that writes the technology partner into the eligible-applicant structure", "edition": "2026-09-10", "urls": []}, {"title": "MO ToRCH Care Hub local delivery partner round", "issuer": "Missouri Department of Social Services", "state": "MO", "due_raw": null, "fit": 8, "status": "forthcoming", "forecast": "Fall 2026", "subgrants_permitted": true, "note": "27 hub anchors named; network contracts with partners/vendors on behalf of the Hubs", "edition": "2026-09-10", "urls": []}, {"title": "MO Virtual Care Expansion follow-on procurement, maternal RPM track", "issuer": "Missouri Department of Social Services", "state": "MO", "due_raw": null, "fit": 8, "status": "forthcoming", "note": "RFI closed September 9; no follow-on published", "edition": "2026-09-10", "urls": []}, {"title": "NY Rural Community Health Integration, Budget Period 2\u20133 implementation funding", "issuer": "New York State Department of Health", "state": "NY", "due_raw": null, "fit": 7, "status": "forthcoming", "edition": "2026-09-10", "urls": []}, {"title": "IL ICAHN Technology Transformation hospital sub-grants", "issuer": "Illinois Critical Access Hospital Network", "state": "IL", "due_raw": null, "fit": 6, "status": "forthcoming", "forecast": "Q1 2027", "amount": 31000000, "edition": "2026-09-10", "urls": []}, {"title": "NH Critical Access Hospital and Acute Care Hospital RFA", "issuer": "Foundation for Healthy Communities", "state": "NH", "due_raw": null, "fit": 5, "status": "forthcoming", "forecast": "Mid September", "edition": "2026-09-10", "urls": []}], "partner_targets": [{"name": "Comagine Health", "state": "ID", "segment": "CBO", "fit": 9, "role": "Subaward recipient under Idaho's RHTP prime award", "amount": null, "note": "Idaho names Comagine but publishes no dollar figure"}, {"name": "Oklahoma Health Care Authority", "state": "OK", "segment": "GOV", "fit": 8, "role": "Administering agency, reported first-tier subaward recipient", "amount": 769000, "subaward_id": "3409028332", "executed": "2026-04-03", "note": "Maternal RPM demonstration, connected BP cuffs, up to 900 high-risk obstetrical patients/year"}, {"name": "Oklahoma State University \u2014 OSU Medicine", "state": "OK", "segment": "EDU", "fit": 8, "role": "Subaward recipient under Oklahoma's RHTP prime award", "amount": 2252567, "subaward_id": "3409028355", "executed": "2026-04-08", "note": "Virtual care OB/GYN clinic operations; a second $13,086,285 subaward covers broader scope"}, {"name": "New York RCHI awardee cohort", "state": "NY", "segment": "CBO", "fit": 7, "role": "Cohort of 56 organizations across 90 awards", "amount": 76200000, "note": "$22.7M planning, $53.5M implementation, from New York's $212M first-year award"}, {"name": "Missouri ToRCH Care Hub anchors", "state": "MO", "segment": "RHS", "fit": 7, "role": "27 hub anchors named July 17, 2026; 19 are hospitals", "amount": null, "note": "Network contracts with partners/vendors on behalf of the Hubs"}, {"name": "AtlantiCare Regional Medical Center", "state": "NJ", "segment": "RHS", "fit": 7, "role": "Allocation recipient under New Jersey's RHTP award", "amount": 790478, "executed": "2026-07-31", "note": "Doula integration model; also holds $2,045,763 mobile integrated health and $1,460,000 at each of two campuses for digital infrastructure"}, {"name": "Foundation for a Healthy Oklahoma", "state": "OK", "segment": "CBO", "fit": 6, "role": "Subaward recipient; hosted and staffed by the Oklahoma Hospital Association", "amount": 4586721.33, "subaward_id": "3409028256", "executed": "2026-03-04", "note": "Expand use of community health workers in rural communities"}], "source_file": "9-10_Avocado_Verified_Intelligence.pdf"}], "provenance": {"cms_awards": {"label": "CMS FY26 Rural Health Transformation awards, all 50 states", "url": "https://www.cms.gov/newsroom/press-releases/cms-announces-50-billion-awards-strengthen-rural-health-all-50-states", "retrieved": "2026-09-13", "note": "Verbatim from the State Award List table. Assistance listing 93.798."}, "subawards": {"label": "Observed first-tier subaward movement", "url": null, "retrieved": "2026-09-10", "note": "From Civic Operator editions citing USAspending, TAGGS, NYSDOH and NJ DHS. Refresh live via fetch_live.py --all."}, "segments": {"label": "Avocado segment economics", "url": null, "retrieved": "2026-08-14", "note": "ACV midpoints and cycle lengths from the ICP Matrix (doc 02 \u00a72). No partner terms."}}};
+
+/* ---------- weights ---------- */
+const DEFAULTS = {soi_remainder:.30, soi_disc:.30, soi_activity:.25, soi_reach:.15,
+                  t_icp:.22, t_state:.18, t_reach:.16, t_urgency:.16, t_role:.12, t_hist:.16};
+let W = {...DEFAULTS};
+const WLABEL = {
+  soi_remainder:'State · unmoved money', soi_disc:'State · CMS discretionary intensity',
+  soi_activity:'State · observed signal activity', soi_reach:'State · contact reachability',
+  t_icp:'Target · ICP fit', t_state:'Target · state opportunity',
+  t_reach:'Target · reach', t_urgency:'Target · urgency', t_role:'Target · subgrant/role fit'};
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const money=n=>n==null?'—':'$'+Math.round(n).toLocaleString();
+const m2=n=>n==null?'—':'$'+(n/1e6).toFixed(1)+'M';
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
+function norm(v,lo,hi){return hi===lo?0.5:clamp((v-lo)/(hi-lo));}
+function bar(v,max,col='var(--primary)',w=90){
+  const x=max?Math.max(2,Math.round(w*v/max)):2;
+  return `<svg class="bar" width="${w}" height="8"><rect width="${w}" height="8" fill="var(--rule)"/>`+
+         `<rect width="${x}" height="8" fill="${col}"/></svg>`;}
+function setDot(id,cls,txt){$('#'+id).className='dot '+cls;$('#'+id.replace('dot','st')).textContent=txt;}
+
+/* ---------- role classification ---------- */
+const ROLE_RULES=[
+  [/chief executive|(^|\b)ceo\b|president and ceo|executive director|secretary\b|commissioner|chief financial|(^|\b)cfo\b|administrator/i,'economic_buyer'],
+  [/government (affairs|relations)|vp of government|development\b|legislative/i,'gatekeeper'],
+  [/chief operating|(^|\b)coo\b|chief nursing|chief quality|chief strategy|chief administrative|program (director|lead|manager|inbox)|coordinator|outreach|deputy director|specialist|interim lead|point of c|director, rural health|director, state office|primary care office/i,'champion'],
+  [/^director$|director\b/i,'economic_buyer'],
+];
+function classifyRole(title){
+  if(!title) return 'unknown';
+  for(const [re,r] of ROLE_RULES) if(re.test(title)) return r;
+  return 'unknown';
+}
+
+/* ---------- email pattern inference ---------- */
+const PATTERNS=[
+  ['first.last', (f,l)=>`${f}.${l}`], ['First.Last', (f,l)=>`${cap(f)}.${cap(l)}`],
+  ['flast', (f,l)=>`${f[0]}${l}`], ['firstl', (f,l)=>`${f}${l[0]}`],
+  ['first_last',(f,l)=>`${f}_${l}`], ['firstlast',(f,l)=>`${f}${l}`],
+  ['last.first',(f,l)=>`${l}.${f}`], ['lastf',(f,l)=>`${l}${f[0]}`],
+];
+const cap=s=>s?s[0].toUpperCase()+s.slice(1):s;
+function nameParts(n){
+  const t=n.replace(/^Dr\.?\s+/i,'').trim().split(/\s+/).filter(x=>x.length>1);
+  if(t.length<2) return null;
+  return [t[0].toLowerCase().replace(/[^a-z]/g,''), t[t.length-1].toLowerCase().replace(/[^a-z]/g,'')];
+}
+function learnDomains(contacts){
+  const byDom={};
+  contacts.forEach(c=>{
+    if(!c.email||!c.name) return;
+    const [local,dom]=c.email.split('@'); if(!dom) return;
+    const np=nameParts(c.name); if(!np) return;
+    (byDom[dom] ||= {hits:{},n:0,org:c.organization});
+    byDom[dom].n++;
+    PATTERNS.forEach(([id,fn])=>{
+      if(fn(np[0],np[1]).toLowerCase()===local.toLowerCase()) byDom[dom].hits[id]=(byDom[dom].hits[id]||0)+1;
+    });
+  });
+  const out={};
+  for(const [dom,d] of Object.entries(byDom)){
+    const best=Object.entries(d.hits).sort((a,b)=>b[1]-a[1])[0];
+    if(best) out[dom]={pattern:best[0],confirming:best[1],seen:d.n,
+                       confidence:clamp(best[1]/Math.max(d.n,1))*clamp(best[1]/3),org:d.org};
+  }
+  return out;
+}
+
+/* ---------- opportunity parsing ---------- */
+function parseDue(raw){
+  if(!raw) return null;
+  const m=raw.match(/([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/);
+  return m?new Date(m[1]):null;
+}
+function subgrantFit(opp){
+  // Prefer the extracted clause over keyword guessing when the edition carries
+  // it. A stated eligibility clause is evidence; a keyword is a hunch.
+  if(opp.subgrants_permitted===true) return 1;
+  if(opp.subgrants_permitted===false) return .25;
+  const t=((opp.title||'')+' '+(opp.note||'')+' '+(opp.body||'')).toLowerCase();
+  if(/school[- ]based|hub|subgrant|subaward|partner|consorti|community[- ]based/.test(t)) return 1;
+  if(/request for information|rfi|virtual care|telehealth|remote/.test(t)) return .8;
+  if(/infrastructure|equipment|capital|cyber/.test(t)) return .3;
+  return .5;
+}
+
+/* ---------- state model ---------- */
+let STATES=[], EDITIONS=[], CONTACTS=[], ORGS=[], DOMAINS={}, REGISTRY=[];
+/* "Covered" = a state we have actually looked at, meaning a briefing named it
+   or a registry pull returned an organization there. The distinction that
+   matters is between a state with no opportunity and a state nobody has
+   checked. Filtering to covered states answers "what can I work today";
+   leaving it off answers "what is the market". Both are real questions and
+   conflating them is how a pipeline quietly shrinks to whatever the feed
+   happened to mention. */
+let COVERED=new Set(), COVERED_ONLY=false;
+function computeCovered(){
+  COVERED=new Set();
+  EDITIONS.forEach(e=>{
+    e.contacts.forEach(c=>c.state&&COVERED.add(c.state));
+    e.opportunities.forEach(o=>{const st=o.state||stateOfIssuer(o.issuer); if(st) COVERED.add(st);});
+    (e.partner_targets||[]).forEach(t=>t.state&&COVERED.add(t.state));
+  });
+  REGISTRY.forEach(r=>r.state&&COVERED.add(r.state));
+  STATES.forEach(s=>s.covered=COVERED.has(s.code));
+}
+
+function computeStates(){
+  const discs=STATES.map(s=>s.discretionary);
+  const dLo=Math.min(...discs), dHi=Math.max(...discs);
+  const actByState={}, verByState={}, cntByState={};
+  CONTACTS.forEach(c=>{ if(!c.state) return;
+    cntByState[c.state]=(cntByState[c.state]||0)+1;
+    if(c.verification>=3) verByState[c.state]=(verByState[c.state]||0)+1;});
+  EDITIONS.forEach(e=>e.opportunities.forEach(o=>{
+    const st=stateOfIssuer(o.issuer); if(st) (actByState[st] ||= new Set()).add(o.title);}));
+  const actMax=Math.max(1,...Object.values(actByState).map(s=>s.size));
+  STATES.forEach(s=>{
+    const rem = s.remainder!=null ? s.remainder/s.award : 1.0;
+    const act = (actByState[s.code]?.size||0)/actMax;
+    const n   = cntByState[s.code]||0;
+    const reach = n? clamp((verByState[s.code]||0)/n *0.6 + clamp(n/8)*0.4) : 0;
+    s.activity=actByState[s.code]?.size||0;
+    s.nContacts=n;
+    s.remShare=rem; s.discNorm=norm(s.discretionary,dLo,dHi);
+    s.actNorm=act; s.reachNorm=reach;
+    s.soi = 100*(W.soi_remainder*rem + W.soi_disc*s.discNorm +
+                 W.soi_activity*act + W.soi_reach*reach);
+    s.parts={'Unmoved money':W.soi_remainder*rem,'CMS discretionary':W.soi_disc*s.discNorm,
+             'Signal activity':W.soi_activity*act,'Reachability':W.soi_reach*reach};
+  });
+}
+function stateOfIssuer(t){
+  if(!t) return null;
+  for(const s of STATES) if(t.includes(s.name)) return s.code;
+  return null;
+}
+
+/* ---------- target model ---------- */
+const ICP={CBO:1,OB:1,ABA:1,ASSOC:1,FQHC:.8,GOV:.8,RHS:.6,SCH:.35,EDU:.35};
+
+/* An organization's role in the deal matters more than its segment.
+   The agency that ISSUES a solicitation is the funder, not the customer.
+   Doc 04 §2: the unit of pursuit is the organization likely to WIN the money.
+   Without this correction state agencies float to the top of every list on ACV
+   alone and the dashboard quietly argues for the opposite of the strategy. */
+const PLAY={applicant:1.0, channel:.88, issuer:.55};
+const PLAY_LABEL={applicant:'Downstream', channel:'Channel', issuer:'Upstream'};
+let ISSUERS=new Set();
+
+/* Agency names arrive in two registers: the opportunity header says "Idaho
+   Department of Health and Welfare", the contact table says "Idaho Dept. of
+   Health and Welfare, RHTP". Naive string matching misses that and every
+   issuing agency is silently reclassified as a prospect. Normalise both sides
+   to a comparable stem before matching. */
+const ABBR=[[/\bdept\.?\b/g,'department'],[/\bdiv\.?\b/g,'division'],
+            [/\bofc\.?\b/g,'office'],[/\bcomm\.?\b/g,'commission'],
+            [/\bhhs\b/g,'health and human services'],[/\bdss\b/g,'department of social services'],
+            [/\bchfs\b/g,'cabinet for health and family services'],
+            [/\bdhw\b/g,'department of health and welfare']];
+function normOrg(x){
+  let n=String(x||'').toLowerCase().replace(/[.,]/g,' ');
+  ABBR.forEach(([re,to])=>n=n.replace(re,to));
+  return n.replace(/\b(rhtp?|rural health transformation( office| team| program)?)\b/g,' ')
+          .replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();
+}
+function buildIssuers(){
+  ISSUERS=new Set();
+  EDITIONS.forEach(e=>e.opportunities.forEach(o=>{
+    const n=normOrg(o.issuer); if(n) ISSUERS.add(n);}));
+}
+function dealRole(org,seg){
+  if(seg==='ASSOC') return 'channel';
+  const n=normOrg(org); if(!n) return 'applicant';
+  for(const iss of ISSUERS){
+    if(n===iss) return 'issuer';
+    // one contains the other, and the shorter is substantial (not a stray word)
+    const short=n.length<iss.length?n:iss, long=n.length<iss.length?iss:n;
+    if(short.length>=12 && long.includes(short)) return 'issuer';
+  }
+  // A state body that issues nothing we have yet seen is still the funder
+  // side. Governor's offices, state authorities and departments administer;
+  // they do not apply to themselves. An organization that has actually been
+  // AWARDED money is exempt from this rule upstream in computeOrgs, which is
+  // why Oklahoma Health Care Authority correctly reads as Downstream: it holds
+  // an executed subaward.
+  if(/\b(department|cabinet|commonwealth|office of administration|division of|state of|office of the governor|governor|community college board)\b/.test(n))
+    return 'issuer';
+  return 'applicant';
+}
+function urgencyScore(d){
+  if(!d) return .35;
+  const days=(d-new Date())/864e5;
+  if(days<0) return .05;
+  if(days<7) return .35;
+  if(days<=150) return 1;
+  if(days<=240) return .7;
+  return .4;
+}
+function computeOrgs(){
+  const byOrg={};
+  CONTACTS.forEach(c=>{
+    const key=c.organization; if(!key) return;
+    (byOrg[key] ||= {org:key,state:c.state,segment:c.segment,contacts:[],opps:new Set()});
+    byOrg[key].contacts.push(c);
+    if(c.opportunity) byOrg[key].opps.add(c.opportunity);
+    if(!byOrg[key].state&&c.state) byOrg[key].state=c.state;
+    if(!byOrg[key].segment&&c.segment) byOrg[key].segment=c.segment;
+  });
+  // Section 6 partner targets: organizations that already hold RHTP money.
+  // Better prospects than an open solicitation, because the money is awarded
+  // and the delivery obligation is real. They carry Civic Operator's own fit
+  // score, which is kept alongside the computed one rather than overwritten.
+  EDITIONS.forEach(e=>(e.partner_targets||[]).forEach(t=>{
+    const k=t.name;
+    byOrg[k] ||= {org:k,state:t.state,segment:t.segment,contacts:[],opps:new Set()};
+    byOrg[k].awarded=t;
+    byOrg[k].state ||= t.state; byOrg[k].segment ||= t.segment;
+  }));
+  // Registry organizations: federal recipients with no briefing contact yet.
+  // They score on ICP fit, state opportunity and award history; reach is low
+  // by construction because nobody is mapped, which is correct -- an org you
+  // cannot reach is genuinely a worse target than one you can.
+  REGISTRY.forEach(r=>{
+    if(byOrg[r.name]) { byOrg[r.name].registry=r; return; }
+    byOrg[r.name]={org:r.name,state:r.state,segment:r.segment,contacts:[],
+                   opps:new Set(),registry:r,fromRegistry:true};
+  });
+  const oppIdx={};
+  EDITIONS.forEach(e=>e.opportunities.forEach(o=>{oppIdx[o.title]=o;}));
+  const stIdx=Object.fromEntries(STATES.map(s=>[s.code,s]));
+  const soiMax=Math.max(...STATES.map(s=>s.soi));
+
+  ORGS=Object.values(byOrg).map(o=>{
+    const seg=o.segment||'GOV';
+    const meta=DATA.segments[seg]||{acv:40000,cycle_months:8,label:seg};
+    const icp=ICP[seg]??.5;
+    const st=stIdx[o.state];
+    const stateScore=st?st.soi/soiMax:.4;
+    const roles=new Set(o.contacts.map(c=>classifyRole(c.title)));
+    const bestVer=o.contacts.length?Math.max(...o.contacts.map(c=>c.verification||1)):0;
+    const reach=o.contacts.length===0 ? .12 : clamp((bestVer>=3?.65:.3)
+                    + (roles.has('champion')?.2:0)
+                    + (roles.has('economic_buyer')?.1:0)
+                    + clamp(o.contacts.length/6)*.1);
+    let due=null;
+    [...o.opps].forEach(t=>{const d=parseDue(oppIdx[t]?.due_raw); if(d&&(!due||d<due)) due=d;});
+    if(!due) EDITIONS.forEach(e=>e.opportunities.forEach(op=>{
+      if(stateOfIssuer(op.issuer)===o.state){const d=parseDue(op.due_raw); if(d&&(!due||d<due)) due=d;}}));
+    const urg=urgencyScore(due);
+    const role=Math.max(...[...o.opps].map(t=>subgrantFit(oppIdx[t]||{title:t})), .5);
+    const play=o.awarded ? (seg==='ASSOC'?'channel':'applicant') : dealRole(o.org,seg);
+    // Prior federal awards are real evidence this org can win and administer
+    // money. It is the one award-history feature available without a trained
+    // model, so it enters the score directly rather than waiting for one.
+    // An organization holding an executed RHTP subaward is the strongest
+    // award-history evidence available: money in hand, this program, this year.
+    const hist=o.awarded ? 1.0
+             : o.registry ? clamp(Math.log1p(o.registry.n_awards)/Math.log(6)) : 0;
+    const parts={'ICP fit':W.t_icp*icp,'State opportunity':W.t_state*stateScore,
+                 'Reach':W.t_reach*reach,'Urgency':W.t_urgency*urg,'Role fit':W.t_role*role,
+                 'Award history':W.t_hist*hist};
+    const raw=Object.values(parts).reduce((a,b)=>a+b,0);
+    const score=100*raw*PLAY[play];
+    const disc=1/Math.pow(1.35, meta.cycle_months/12);
+    return {...o, segLabel:meta.label, seg, score, parts, reach, urgency:urg, role, icp,
+            play, playLabel:PLAY_LABEL[play], stateScore, due, nContacts:o.contacts.length,
+            hist, fromRegistry:!!o.fromRegistry, nAwards:o.registry?.n_awards||0,
+            awarded:o.awarded||null, coFit:o.awarded?.fit||null,
+            source:o.awarded?'Awarded':o.fromRegistry?'USAspending':'Civic Operator',
+            expired: due? (due-new Date())/864e5 < 0 : false,
+            bestRole:[...roles].filter(r=>r!=='unknown').sort()[0]||'unmapped',
+            eav:(score/100)*meta.acv*disc*(play==='channel'?0:1),
+            tier: score>=62?'A': score>=45?'B':'C'};
+  }).sort((a,b)=>b.score-a.score);
+}
+
+/* ---------- rendering ---------- */
+function sortable(tbl, rows, render, def){
+  let key=def, dir=-1;
+  const draw=()=>{
+    const r=[...rows].sort((a,b)=>{
+      const x=a[key],y=b[key];
+      if(x==null) return 1; if(y==null) return -1;
+      return (typeof x==='string'?x.localeCompare(y):x-y)*dir;});
+    tbl.querySelector('tbody').innerHTML=r.map(render).join('');
+    tbl.dispatchEvent(new CustomEvent('drawn'));
+  };
+  tbl.querySelectorAll('th[data-s]').forEach(th=>th.onclick=()=>{
+    const k=th.dataset.s; dir = key===k? -dir : -1; key=k; draw();});
+  draw(); return draw;
+}
+
+function renderPipeline(){
+  const fs=$('#fState').value, fg=$('#fSeg').value, ft=$('#fTier').value, fp=$('#fPlay').value;
+  const rows=ORGS.filter(o=>(!fs||o.state===fs)&&(!fg||o.seg===fg)&&(!ft||o.tier===ft)
+    &&(!fp||o.play===fp)&&(!COVERED_ONLY||COVERED.has(o.state)));
+  const max=Math.max(...ORGS.map(o=>o.score),1);
+  const tbl=$('#tPipe');
+  const draw=sortable(tbl,rows,o=>`<tr class="click" data-org="${esc(o.org)}">
+    <td class="num">${o.score.toFixed(1)} ${bar(o.score,max,'var(--primary)',56)}</td>
+    <td class="tier ${o.tier}">${o.tier}</td><td>${esc(o.org)}</td>
+    <td class="sub" style="font-size:12.5px">${esc(o.segLabel)}</td>
+    <td class="mono">${o.state||'—'}</td>
+    <td><span class="pill ${o.play==='applicant'?'v3':o.play==='channel'?'gov':'gray'}">${o.playLabel}</span></td>
+    <td class="num">${o.reach.toFixed(2)}</td>
+    <td class="num">${o.expired?'<span class="pill v1">expired</span>':o.urgency.toFixed(2)}</td>
+    <td class="num">${o.play==='channel'?'channel':money(o.eav)}</td><td class="num">${o.nContacts}</td>
+    <td><span class="pill ${o.bestRole==='champion'?'v3':'gray'}">${o.bestRole.replace('_',' ')}</span></td>
+    <td><span class="pill ${o.fromRegistry?'gov':'gray'}">${o.source}${o.nAwards?' ·'+o.nAwards:''}</span></td>
+    </tr>`,'score');
+  tbl.addEventListener('drawn',()=>{
+    tbl.querySelectorAll('tr[data-org]').forEach(tr=>tr.onclick=()=>showOrg(tr.dataset.org));});
+  tbl.querySelectorAll('tr[data-org]').forEach(tr=>tr.onclick=()=>showOrg(tr.dataset.org));
+
+  const apps=ORGS.filter(o=>o.play==='applicant');
+  const A=apps.filter(o=>o.tier==='A').length;
+  $('#pipeStats').innerHTML=[
+    ['v',apps.length+'/'+ORGS.length,'applicants / all orgs'],
+    ['v',A,'tier A applicants'],
+    ['v',money(apps.reduce((a,o)=>a+o.eav,0)),'applicant expected value'],
+    ['v',COVERED.size+'/50','states covered'],
+    ['v',apps.filter(o=>o.awarded).length,'already hold RHTP money'],
+  ].map(([,v,k])=>`<div class="stat"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
+}
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function showOrg(name){
+  const o=ORGS.find(x=>x.org===name); if(!o) return;
+  const tot=Object.values(o.parts).reduce((a,b)=>a+b,0);
+  const mx=Math.max(...Object.values(o.parts));
+  $('#pipeDetail').innerHTML=`<div class="detail">
+    <h3 style="margin-top:0">${esc(o.org)}</h3>
+    <dl class="kv">
+      <dt>Segment</dt><dd>${esc(o.segLabel)} (${o.seg})</dd>
+      <dt>State</dt><dd>${o.state||'unmapped'}</dd>
+      <dt>Score / tier</dt><dd>${o.score.toFixed(1)} · ${o.tier}</dd>
+      <dt>Expected value</dt><dd>${money(o.eav)} (ACV ${money(DATA.segments[o.seg]?.acv)} × score × ${(DATA.segments[o.seg]?.cycle_months)}-mo discount)</dd>
+      <dt>Nearest deadline</dt><dd>${o.due?o.due.toDateString()+' ('+Math.round((o.due-new Date())/864e5)+'d)':'none attached'}</dd>
+      <dt>Opportunities</dt><dd>${[...o.opps].map(esc).join('<br>')||'—'}</dd>
+    </dl>
+    <h4>Score decomposition</h4>
+    ${Object.entries(o.parts).map(([k,v])=>`<div class="contrib"><span class="nm">${k}</span>
+      <span class="bx"><i style="width:${(v/mx*100).toFixed(0)}%"></i></span>
+      <span class="pc">${(v/tot*100).toFixed(0)}%</span></div>`).join('')}
+    <h4>Mapped contacts</h4>
+    <div class="tw" style="margin-bottom:0"><table><thead><tr><th>Name</th><th>Title</th>
+    <th>Role</th><th>Email</th><th>Source</th></tr></thead><tbody>
+    ${o.contacts.map(c=>`<tr><td>${esc(c.name)}</td><td class="sub" style="font-size:12.5px">${esc(c.title)}</td>
+      <td><span class="pill ${classifyRole(c.title)==='champion'?'v3':'gray'}">${classifyRole(c.title).replace('_',' ')}</span></td>
+      <td class="mono" style="font-size:12px">${esc(c.email||inferEmail(c)||'—')}${c.email?'':c.inferred?' <span class="pill v1">inferred</span>':''}</td>
+      <td><span class="pill v${c.verification>=3?3:1}">${c.verification>=3?'verified':'unsourced'}</span></td></tr>`).join('')}
+    </tbody></table></div></div>`;
+  $('#pipeDetail').scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+/* Most "unsourced" rows DO carry an address -- Civic Operator's flag means it
+   could not cite a public page, not that the field is empty. So the useful
+   check is conformance: does this address match the pattern the sourced
+   addresses on its domain establish? Conforming corroborates. Deviating is the
+   row a human should look at before it enters a sequence. */
+function patternCheck(c){
+  if(!c.email||!c.email.includes('@')||c.verification>=3) return null;
+  const [local,dom]=c.email.rsplit ? c.email.rsplit('@') : [c.email.slice(0,c.email.lastIndexOf('@')),c.email.slice(c.email.lastIndexOf('@')+1)];
+  const p=DOMAINS[dom], np=nameParts(c.name);
+  if(!p||!np) return null;
+  const fn=PATTERNS.find(x=>x[0]===p.pattern); if(!fn) return null;
+  const exp=fn[1](np[0],np[1]);
+  return {ok:exp.toLowerCase()===local.toLowerCase(), expected:exp+'@'+dom};
+}
+function inferEmail(c){
+  if(c.email) return c.email;
+  const org=c.organization||'';
+  const cand=Object.entries(DOMAINS).filter(([d,p])=>p.org===org).sort((a,b)=>b[1].confidence-a[1].confidence)[0];
+  if(!cand) return null;
+  const np=nameParts(c.name); if(!np) return null;
+  const fn=PATTERNS.find(p=>p[0]===cand[1].pattern); if(!fn) return null;
+  c.inferred=true;
+  return fn[1](np[0],np[1])+'@'+cand[0];
+}
+
+function renderStates(){
+  const max=Math.max(...STATES.map(s=>s.soi));
+  sortable($('#tStates'),COVERED_ONLY?STATES.filter(s=>s.covered):STATES,s=>`<tr>
+    <td class="num">${s.soi.toFixed(1)} ${bar(s.soi,max,'var(--slate)',50)}</td>
+    <td>${s.name}</td><td class="num">${m2(s.award)}</td>
+    <td class="num">${m2(s.discretionary)}</td>
+    <td class="num">${s.moved!=null?m2(s.moved):'—'}</td>
+    <td class="num">${s.remainder!=null?m2(s.remainder):m2(s.award)}</td>
+    <td class="num">${s.recipients??'—'}</td>
+    <td class="num">${s.activity||0}</td>
+    <td><span class="pill ${s.covered?'v3':'gray'}">${s.covered?'covered':'not checked'}</span></td>
+    <td><span class="pill ${s.observed?'gov':'gray'}">${s.observed?'observed':'no record'}</span></td>
+    </tr>`,'soi');
+  const obs=STATES.filter(s=>s.observed);
+  $('#stateStats').innerHTML=[
+    ['$10.00B','FY26 obligated, all 50 states'],
+    [m2(STATES.reduce((a,s)=>a+(s.moved||0),0)),'observed first-tier movement'],
+    [obs.length+'/50','states with a subaward record'],
+    [m2(Math.max(...STATES.map(s=>s.discretionary))),'largest discretionary (TX)'],
+  ].map(([v,k])=>`<div class="stat"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
+}
+
+function renderContacts(){
+  DOMAINS=learnDomains(CONTACTS);
+  const dr=Object.entries(DOMAINS).map(([d,p])=>({domain:d,...p}));
+  sortable($('#tDomains'),dr,r=>`<tr><td class="mono">${esc(r.domain)}</td>
+    <td class="mono">${r.pattern}@${esc(r.domain)}</td><td class="num">${r.confirming}/${r.seen}</td>
+    <td class="num">${(r.confidence*100).toFixed(0)}% ${bar(r.confidence,1,'var(--primary)',50)}</td>
+    <td class="sub" style="font-size:12.5px">${esc(r.org||'')}</td></tr>`,'confirming');
+
+  const fr=$('#fRole').value, fv=$('#fVer').value;
+  const rows=CONTACTS.map(c=>({...c,role:classifyRole(c.title),chk:patternCheck(c)}))
+    .filter(c=>(!fr||c.role===fr)&&(!fv||String(c.verification>=3?3:1)===fv));
+  sortable($('#tContacts'),rows,c=>{
+    const inf=!c.email&&inferEmail(c);
+    return `<tr><td>${esc(c.name)}</td><td class="sub" style="font-size:12.5px">${esc(c.title)}</td>
+    <td><span class="pill ${c.role==='champion'?'v3':c.role==='economic_buyer'?'gov':'gray'}">${c.role.replace('_',' ')}</span></td>
+    <td>${esc(c.organization)}</td><td class="mono">${c.state||'—'}</td>
+    <td class="mono" style="font-size:12px">${esc(c.email||inf||'—')}${inf?' <span class="pill v1">inferred</span>':''}</td>
+    <td><span class="pill v${c.verification>=3?3:1}">${c.verification>=3?'verified':'unsourced'}</span></td>
+    <td>${c.chk? (c.chk.ok?'<span class="pill v3">conforms</span>':
+      `<span class="pill v1">deviates</span> <span class="sub mono" style="font-size:11px">expected ${esc(c.chk.expected)}</span>`) :'—'}</td></tr>`;},'name');
+
+  const roles={};CONTACTS.forEach(c=>{const r=classifyRole(c.title);roles[r]=(roles[r]||0)+1;});
+  const checks=CONTACTS.map(patternCheck).filter(Boolean);
+  const dev=checks.filter(c=>!c.ok).length;
+  $('#ctStats').innerHTML=[
+    [CONTACTS.length,'contacts'],
+    [CONTACTS.filter(c=>c.verification>=3).length,'source-verified by the feed'],
+    [checks.length-dev,'unsourced but pattern-corroborated'],
+    [dev,'deviate — review before sending'],
+    [roles.champion||0,'champions identified'],
+  ].map(([v,k])=>`<div class="stat"><span class="v">${v}</span><span class="k">${k}</span></div>`).join('');
+}
+
+function renderSources(){
+  const p=DATA.provenance;
+  const rows=[
+    ['CMS FY26 RHTP state awards','50 states',p.cms_awards.url,p.cms_awards.retrieved,'primary source'],
+    ['First-tier subaward movement',STATES.filter(s=>s.observed).length+' states',null,p.subawards.retrieved,'from briefing'],
+    ['Civic Operator contacts',CONTACTS.length+' rows',null,EDITIONS.map(e=>e.edition).join(', '),'parsed locally'],
+    ['Civic Operator opportunities',EDITIONS.reduce((a,e)=>a+e.opportunities.length,0)+' notices',null,EDITIONS.map(e=>e.edition).join(', '),'parsed locally'],
+    ['Segment economics (ICP matrix)',Object.keys(DATA.segments).length+' segments',null,p.segments.retrieved,'internal, MNDA'],
+    ['Email domain patterns',Object.keys(DOMAINS).length+' domains',null,'derived','inferred at runtime'],
+  ];
+  $('#tSources').querySelector('tbody').innerHTML=rows.map(r=>`<tr><td>${r[0]}</td>
+    <td class="mono">${r[1]}</td><td class="sub" style="font-size:12.5px">${r[2]?`<a href="${r[2]}" target="_blank" rel="noopener">CMS press release, 2025-12-29</a>`:'—'}</td>
+    <td class="mono" style="font-size:12px">${r[3]}</td>
+    <td><span class="pill ${r[4]==='primary source'?'v3':r[4]==='inferred at runtime'?'v1':'gray'}">${r[4]}</span></td></tr>`).join('');
+}
+
+/* ---------- weights UI ---------- */
+function renderWeights(){
+  $('#weights').innerHTML=Object.keys(DEFAULTS).map(k=>`<div class="wrow">
+    <label>${WLABEL[k]}</label><input type="range" min="0" max="0.6" step="0.01" value="${W[k]}" data-w="${k}">
+    <span class="val" id="wv-${k}">${W[k].toFixed(2)}</span></div>`).join('');
+  $$('#weights input').forEach(i=>i.oninput=()=>{
+    W[i.dataset.w]=+i.value; $('#wv-'+i.dataset.w).textContent=(+i.value).toFixed(2);
+    recompute(); save();});
+}
+
+/* ---------- storage ---------- */
+const HAS_STORE = typeof window.storage !== 'undefined' && window.storage;
+async function saveRegistry(){
+  if(!HAS_STORE) return;
+  try{ await window.storage.set('avocado:registry',JSON.stringify(REGISTRY)); }catch(e){}
+}
+async function save(){
+  if(!HAS_STORE){setDot('dotStore','warn','session only');return;}
+  try{
+    await window.storage.set('avocado:editions',JSON.stringify(EDITIONS));
+    await window.storage.set('avocado:weights',JSON.stringify(W));
+    setDot('dotStore','ok','saved');
+  }catch(e){setDot('dotStore','warn','store unavailable');}
+}
+async function load(){
+  if(!HAS_STORE){setDot('dotStore','warn','session only — storage unavailable');return false;}
+  try{
+    const w=await window.storage.get('avocado:weights');
+    if(w) W={...DEFAULTS,...JSON.parse(w.value)};
+  }catch(e){}
+  try{
+    const g=await window.storage.get('avocado:registry');
+    if(g) REGISTRY=JSON.parse(g.value)||[];
+  }catch(e){}
+  try{
+    const r=await window.storage.get('avocado:editions');
+    if(r){const s=JSON.parse(r.value); if(s?.length) {EDITIONS=s; setDot('dotStore','ok',s.length+' editions stored'); return true;}}
+  }catch(e){}
+  setDot('dotStore','','fresh session');
+  return false;
+}
+
+/* ---------- live USAspending ---------- */
+async function fetchLive(){
+  const log=$('#fetchLog'); log.style.display='block'; log.innerHTML='';
+  const say=(t,c='')=>log.insertAdjacentHTML('beforeend',`<div class="${c}">${esc(t)}</div>`);
+  setDot('dotLive','warn','contacting USAspending');
+  say('POST api.usaspending.gov/api/v2/search/spending_by_award/ (assistance listing 93.798, subawards)');
+  try{
+    const r=await fetch('https://api.usaspending.gov/api/v2/search/spending_by_award/',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({subawards:true,limit:100,page:1,
+        fields:['Sub-Award ID','Sub-Awardee Name','Sub-Award Amount','Sub-Award Date','Awarding Agency','Prime Recipient Name'],
+        filters:{program_numbers:['93.798'],award_type_codes:['02','03','04','05']}})});
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const j=await r.json();
+    const n=(j.results||[]).length;
+    say(`received ${n} subaward records`,'ok');
+    if(n){
+      applyLive(j.results); say('state remainders updated from live data','ok');
+      setDot('dotLive','ok',`live · ${n} subawards`);
+    } else { say('no subaward records returned yet for 93.798'); setDot('dotLive','ok','live · 0 records'); }
+  }catch(e){
+    say('blocked: '+e.message,'err');
+    say('Your browser refused the cross-origin request. This is expected in a sandboxed frame.','err');
+    say('Run fetch_live.py from the source bundle and drop the JSON on the Add-briefing tab.','err');
+    setDot('dotLive','warn','live blocked — using observed data');
+  }
+}
+function applyLive(results,byState){
+  const by=byState?Object.fromEntries(
+    Object.entries(byState).map(([k,v])=>[k,{moved:v.moved,n:v.n}])):{};
+  if(!byState){
+  results.forEach(r=>{
+    const st=(r['Prime Recipient Name']||'').match(/\b([A-Z]{2})\b/);
+    const amt=+(r['Sub-Award Amount']||0);
+    const key=st?st[1]:null; if(!key) return;
+    by[key] ||= {moved:0,n:0}; by[key].moved+=amt; by[key].n++;
+  });}
+  STATES.forEach(s=>{ if(by[s.code]){
+    s.moved=by[s.code].moved; s.recipients=by[s.code].n;
+    s.remainder=s.award-s.moved; s.observed=true; s.source='USAspending live';}});
+  recompute();
+}
+
+/* ---------- briefing ingest ---------- */
+async function ingestFile(f){
+  const log=$('#upLog');
+  const say=(t,c='')=>log.insertAdjacentHTML('beforeend',`<div class="${c}">${esc(t)}</div>`);
+  say(`reading ${f.name} (${(f.size/1024).toFixed(0)} KB)`);
+  let text='';
+  try{
+    if(/\.pdf$/i.test(f.name)){
+      if(!PDFOK){
+        say('PDF reader unavailable — the pdf.js library did not load.','err');
+        say('Open this file in a normal browser tab, or export the briefing as HTML and drop that instead.','err');
+        return;
+      }
+      const buf=await f.arrayBuffer();
+      const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+      say(`${pdf.numPages} pages`);
+      for(let i=1;i<=pdf.numPages;i++){
+        const pg=await pdf.getPage(i); const tc=await pg.getTextContent();
+        text+=tc.items.map(it=>it.str).join(' ')+'\n';
+      }
+    } else if(/\.json$/i.test(f.name)){
+      const j=JSON.parse(await f.text());
+      let did=false;
+      if(j.by_state||j.results){applyLive(j.results||[],j.by_state);
+        say(`applied ${(j.results||[]).length} subaward records`,'ok');did=true;}
+      if(j.organizations&&j.organizations.length){
+        REGISTRY=j.organizations; await saveRegistry();
+        const sts=new Set(REGISTRY.map(o=>o.state).filter(Boolean));
+        say(`loaded ${REGISTRY.length} organizations across ${sts.size} states from ${(j.listings||[]).join(', ')}`,'ok');
+        say('These are recipients of federal maternal, child and health-center money — the candidate universe, no briefing required.','ok');
+        did=true;}
+      if(did){rebuild();return;}
+      say('JSON recognised but contained no subawards or organizations','err');return;
+    } else { text=await f.text(); }
+  }catch(e){ say('parse failed: '+e.message,'err'); return; }
+
+  const parsed=parseBriefing(text,f.name);
+  if(!parsed.contacts.length&&!parsed.opportunities.length){
+    say('no contact rows or opportunities recognised in this document','err');
+    say('If the PDF is image-only it needs OCR first; the text layer is empty.','err'); return;
+  }
+  say(`parsed ${parsed.contacts.length} contacts, ${parsed.opportunities.length} opportunities`,'ok');
+
+  const prev=EDITIONS[EDITIONS.length-1];
+  EDITIONS=EDITIONS.filter(e=>e.edition!==parsed.edition);
+  EDITIONS.push(parsed); EDITIONS.sort((a,b)=>a.edition.localeCompare(b.edition));
+  if(prev&&prev.edition!==parsed.edition) renderDiff(prev,parsed);
+  say(`stored as edition ${parsed.edition}`,'ok');
+  await save(); rebuild();
+}
+
+function parseBriefing(text,fname){
+  // date from filename (9-3_..., 2026-09-03_...) or from the document header
+  let ed=null;
+  let m=fname.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if(m) ed=`${m[1]}-${m[2]}-${m[3]}`;
+  if(!ed && (m=fname.match(/^(\d{1,2})[-_](\d{1,2})/))) ed=`2026-${String(+m[1]).padStart(2,'0')}-${String(+m[2]).padStart(2,'0')}`;
+  if(!ed && (m=text.match(/([A-Z][a-z]+)\s+(\d{1,2}),\s+(\d{4})/))) ed=new Date(m[0]).toISOString().slice(0,10);
+  ed ||= new Date().toISOString().slice(0,10);
+
+  const emails=[...text.matchAll(/[\w.+-]+@[\w.-]+\.\w{2,}/g)].map(x=>x[0]);
+  const contacts=[];
+  // Contact rows in the PDF text layer follow: Name, Title, Organization, email
+  const rowRe=/([A-Z][a-zA-Z.'’-]+(?:\s+[A-Z][a-zA-Z.'’-]+){1,3})\s+([A-Z][^|\n]{3,70}?)\s+((?:[A-Z][\w.&'’,–-]*\s*){1,8}?)\s*([\w.+-]+@[\w.-]+\.\w{2,})/g;
+  let r;
+  while((r=rowRe.exec(text))!==null){
+    contacts.push({name:r[1].trim(),title:r[2].trim(),organization:r[3].trim(),
+      email:r[4],verification:1,opportunity:''});
+  }
+  // fall back: at minimum capture every email with nearby capitalised name
+  if(!contacts.length){
+    emails.forEach(e=>{
+      const i=text.indexOf(e);
+      const before=text.slice(Math.max(0,i-160),i);
+      const nm=[...before.matchAll(/([A-Z][a-z]+\s+[A-Z][a-zA-Z'’-]+)/g)].pop();
+      contacts.push({name:nm?nm[1]:'No named individual published',title:'',
+        organization:(e.split('@')[1]||'').replace(/\.(gov|org|com|edu)$/,''),
+        email:e,verification:1,opportunity:''});
+    });
+  }
+  const opportunities=[];
+  const oppRe=/((?:Idaho|Missouri|Kentucky|[A-Z][a-z]+)\s+RHTP?[^\n.]{6,90})/g;
+  const seen=new Set();
+  while((r=oppRe.exec(text))!==null){
+    const t=r[1].trim().replace(/\s+/g,' ');
+    if(seen.has(t)||t.length<14) continue; seen.add(t);
+    const tail=text.slice(r.index,r.index+700);
+    const due=tail.match(/([A-Z][a-z]+\s+\d{1,2},\s+\d{4})/);
+    const iss=tail.match(/((?:[A-Z][\w]*\s){1,5}(?:Department|Cabinet|Office|Agency)[^.\n]{0,60})/);
+    opportunities.push({title:t,issuer:iss?iss[1].trim():null,due_raw:due?due[1]:null,
+      urls:[...tail.matchAll(/https?:\/\/[^\s)"']+/g)].map(x=>x[0]).slice(0,4),edition:ed});
+  }
+  // geography + segment tagging from names
+  contacts.forEach(c=>{
+    const blob=(c.organization+' '+(c.email||'')).toLowerCase();
+    c.state = /idaho|\.id\./.test(blob)?'ID': /missouri|mo\.gov/.test(blob)?'MO':
+              /kentucky|ky\.gov/.test(blob)?'KY':
+              (STATES.find(s=>c.organization.includes(s.name))?.code||null);
+    c.segment = /hospital|health system|medical center/i.test(c.organization)?'RHS':
+                /community health|health center|fqhc|clinic/i.test(c.organization)?'FQHC':
+                /association/i.test(c.organization)?'ASSOC':
+                /behavioral|counseling/i.test(c.organization)?'ABA':
+                /university|college/i.test(c.organization)?'EDU':
+                /department|dept|cabinet|commonwealth|office of/i.test(c.organization)?'GOV':'CBO';
+  });
+  return {edition:ed,contacts,opportunities,source_file:fname};
+}
+
+const TRIGGER={deadline_moved:1,contact_verified:.9,new_subaward:.85,new_contact:.7,
+               email_added:.75,opportunity_added:.8,opportunity_dropped:.6,duplicate_key:.5,
+               title_changed:.4};
+
+/* Opportunity identity across editions.
+
+   Editions title the same instrument differently. The 9-3 edition calls it
+   "Idaho RHTP Healthcare Infrastructure Support (RHTPHIS1)"; the 9-10 edition
+   calls it "ID Healthcare Infrastructure Support". Matched on the raw string
+   those are two opportunities, and the deadline extension from September 13 to
+   September 18 -- the single highest-priority event this engine exists to
+   catch -- disappears as an unrelated addition.
+
+   So strip what varies: the leading state name or code, program branding,
+   parenthetical solicitation numbers, and the RHTP token itself. What remains
+   is the instrument. */
+const STATE_WORDS=/\b(alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new hampshire|new jersey|new mexico|new york|north carolina|north dakota|ohio|oklahoma|oregon|pennsylvania|rhode island|south carolina|south dakota|tennessee|texas|utah|vermont|virginia|washington|west virginia|wisconsin|wyoming)\b/g;
+function oppKey(o){
+  let t=String(o.title||'').toLowerCase();
+  t=t.replace(/\([^)]*\)/g,' ')                    // (RHTPHIS1), (VDH-26-705-0387)
+     .replace(/\bvdh-[\d-]+\b/g,' ')
+     .replace(/\bswift\s*\d+\b/g,' ')
+     .replace(/connected to care[\s,—-]*(closer to home)?/g,' ')  // VA program brand
+     .replace(/\bcareiq\b/g,' ')
+     .replace(STATE_WORDS,' ')
+     .replace(/\brhtp?\b/g,' ')
+     .replace(/^[a-z]{2}\s+/,' ')                   // leading state code
+     .replace(/[^a-z ]/g,' ').replace(/\s+/g,' ').trim();
+  return t;
+}
+function keyOf(c){return [c.opportunity,c.name,c.organization].map(x=>String(x||'').toLowerCase().trim()).join('\u241f');}
+function renderDiff(prev,curr){
+  const pi=Object.fromEntries(prev.contacts.map(c=>[keyOf(c),c]));
+  const ci=Object.fromEntries(curr.contacts.map(c=>[keyOf(c),c]));
+  const ev=[];
+  for(const [k,c] of Object.entries(ci)){
+    const o=pi[k];
+    if(!o){ev.push({t:'new_contact',who:c.name+' · '+c.organization,d:c.title});continue;}
+    if((o.verification||1)<(c.verification||1)) ev.push({t:'contact_verified',who:c.name+' · '+c.organization,d:'now source-verified'});
+    if(!o.email&&c.email) ev.push({t:'email_added',who:c.name,d:c.email});
+  }
+  for(const k of Object.keys(pi)) if(!(k in ci)) ev.push({t:'opportunity_dropped',who:pi[k].name+' · '+pi[k].organization,d:'no longer listed'});
+  const po={}; prev.opportunities.forEach(o=>{po[oppKey(o)]=o;});
+  const co=new Set();
+  curr.opportunities.forEach(o=>{
+    const k=oppKey(o); co.add(k);
+    const p=po[k];
+    if(!p){ev.push({t:'opportunity_added',who:o.title,d:o.due_raw||o.forecast||'no date published'});return;}
+    if((p.due_raw||null)!==(o.due_raw||null)){
+      ev.push({t:'deadline_moved',who:o.title,
+               d:`${p.due_raw||'not published'} → ${o.due_raw||'not published'}`});
+    }
+    if(p.title!==o.title) ev.push({t:'title_changed',who:o.title,d:`was: ${p.title}`});
+  });
+  Object.entries(po).forEach(([k,o])=>{
+    if(!co.has(k)) ev.push({t:'opportunity_dropped',who:o.title,d:'not in this edition'});});
+  ev.forEach(e=>e.p=TRIGGER[e.t]||.3);
+  ev.sort((a,b)=>b.p-a.p);
+  $('#diffEmpty').style.display=ev.length?'none':'block';
+  $('#tDiff').querySelector('tbody').innerHTML=ev.map(e=>`<tr>
+    <td class="num">${e.p.toFixed(2)}</td><td><span class="pill ${e.p>=.8?'v3':'gray'}">${e.t.replace(/_/g,' ')}</span></td>
+    <td>${esc(e.who)}</td><td class="sub" style="font-size:12.5px">${esc(e.d)}</td></tr>`).join('');
+}
+
+function renderEditions(){
+  $('#tEditions').querySelector('tbody').innerHTML=EDITIONS.map((e,i)=>`<tr>
+    <td class="mono">${e.edition}</td><td class="num">${e.contacts.length}</td>
+    <td class="num">${e.opportunities.length}</td>
+    <td class="num">${e.contacts.filter(c=>c.verification>=3).length}</td>
+    <td class="sub" style="font-size:12.5px">${esc(e.source_file||'')}</td>
+    <td><button class="act ghost" data-del="${i}" style="padding:3px 9px;font-size:12px">Remove</button></td></tr>`).join('');
+  $$('#tEditions button[data-del]').forEach(b=>b.onclick=async()=>{
+    EDITIONS.splice(+b.dataset.del,1); await save(); rebuild();});
+}
+
+/* ---------- orchestration ---------- */
+function renderCoverage(){
+  const sts=COVERED;
+  const el=document.getElementById('covBanner');
+  if(sts.size>=25){el.innerHTML='';return;}
+  el.innerHTML=`<div class="note"><h4>Coverage: ${sts.size} of 50 states</h4>
+  <p>Targets here come from the ${EDITIONS.length} briefing${EDITIONS.length===1?'':'s'} you
+  have stored, and a briefing only covers the states it happened to report on. That is a feed
+  limitation, not a market one — the other ${50-sts.size} states hold their full FY26 awards,
+  visible on the States tab. Use <strong>Covered states only</strong> to see what is workable
+  today; turn it off to see what is missing.</p>
+  <p>To cover all 50 without waiting for briefings, run
+  <code>python fetch_live.py --all</code> and drop the JSON here. It pulls every recipient of
+  assistance listings 93.224, 93.505, 93.926, 93.994 and 93.798 — health centers, MIECHV home-visiting
+  grantees, Healthy Start sites and Title V agencies. Those organizations already run the CHW,
+  doula and home-visiting staffing Avocado offloads, and they are named, stated and
+  award-histor&shy;ied in a public API. That is the candidate universe, and it does not depend
+  on what any briefing chose to cover.</p></div>`;
+}
+function renderStale(){
+  const el=$('#staleBanner'); if(!EDITIONS.length){el.innerHTML='';return;}
+  const newest=EDITIONS[EDITIONS.length-1].edition;
+  const age=Math.round((new Date()-new Date(newest))/864e5);
+  const expired=ORGS.filter(o=>o.expired).length;
+  if(age<7&&!expired){el.innerHTML='';return;}
+  el.innerHTML=`<div class="note warn"><h4>This view is ${age} days old</h4>
+  <p>Newest stored edition is ${newest}. ${expired ? expired + ` organizations are attached to a deadline that has already passed, so their urgency score is floored and they rank below live opportunities.` : ``} Add today's briefing on the <strong>Add briefing</strong> tab and every score here recalculates. This banner is the point of storing editions: a feed you read once and never diff cannot tell you it has gone stale.</p></div>`;
+}
+function recompute(){buildIssuers();computeCovered();computeStates();computeOrgs();renderPipeline();renderCoverage();renderStale();renderStates();renderSources();}
+function rebuild(){
+  CONTACTS=EDITIONS.flatMap(e=>e.contacts);
+  DOMAINS=learnDomains(CONTACTS);
+  buildIssuers();computeCovered();computeStates();computeOrgs();
+  renderPipeline();renderCoverage();renderStale();renderStates();renderContacts();renderSources();renderEditions();
+  if(EDITIONS.length>1) renderDiff(EDITIONS[EDITIONS.length-2],EDITIONS[EDITIONS.length-1]);
+  const sts=[...new Set(ORGS.map(o=>o.state).filter(Boolean))].sort();
+  $('#fState').innerHTML='<option value="">All states</option>'+sts.map(s=>`<option>${s}</option>`).join('');
+  const sgs=[...new Set(ORGS.map(o=>o.seg))].sort();
+  $('#fSeg').innerHTML='<option value="">All segments</option>'+sgs.map(s=>`<option value="${s}">${DATA.segments[s]?.label||s}</option>`).join('');
+}
+
+(async function init(){
+  STATES=DATA.states.map(s=>({...s}));
+  const had=await load();
+  if(!had) EDITIONS=DATA.editions.map(e=>({...e}));
+  setDot('dotData','ok',`50 states · ${EDITIONS.length} edition${EDITIONS.length===1?'':'s'}`);
+  renderWeights(); rebuild();
+
+  $$('nav button').forEach(b=>b.onclick=()=>{
+    $$('nav button').forEach(x=>x.classList.toggle('on',x===b));
+    $$('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));});
+  ['#fState','#fSeg','#fTier','#fPlay'].forEach(s=>$(s).onchange=renderPipeline);
+  ['#fRole','#fVer'].forEach(s=>$(s).onchange=renderContacts);
+  $('#btnFetch').onclick=fetchLive;
+  const toggleCov=()=>{
+    COVERED_ONLY=!COVERED_ONLY;
+    ['#btnCov','#btnCov2'].forEach(id=>{const b=$(id); if(!b)return;
+      b.textContent=COVERED_ONLY?`Covered only (${COVERED.size})`:'Covered states only';
+      b.style.background=COVERED_ONLY?'var(--primary)':'var(--panel)';
+      b.style.color=COVERED_ONLY?'#fff':'var(--primary)';});
+    renderPipeline(); renderStates();};
+  $('#btnCov').onclick=toggleCov; $('#btnCov2').onclick=toggleCov;
+  $('#btnReset').onclick=()=>{W={...DEFAULTS};renderWeights();recompute();save();};
+  $('#btnCsv').onclick=()=>{
+    const hdr=['score','tier','play','organization','segment','state','reach','urgency','role_fit','expected_value','contacts','entry_point','nearest_deadline'];
+    const rows=ORGS.map(o=>[o.score.toFixed(1),o.tier,o.playLabel,o.org,o.segLabel,o.state||'',o.reach.toFixed(3),
+      o.urgency.toFixed(3),o.role.toFixed(3),Math.round(o.eav),o.nContacts,o.bestRole,
+      o.due?o.due.toISOString().slice(0,10):'']);
+    const csv=[hdr,...rows].map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download='avocado-pipeline.csv'; a.click();};
+
+  const dz=$('#drop');
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add('over');};
+  dz.ondragleave=()=>dz.classList.remove('over');
+  dz.ondrop=e=>{e.preventDefault();dz.classList.remove('over');
+    [...e.dataTransfer.files].forEach(ingestFile);};
+  $('#file').onchange=e=>[...e.target.files].forEach(ingestFile);
+
+  fetchLive();
+})();
+</script>
+</body>
+</html>

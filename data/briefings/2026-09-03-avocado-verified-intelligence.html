@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026-09-03 — Avocado RHTP Alerts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600&family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5E6DA;
+    --ink:#333A40;
+    --teal:#007A99;
+    --coral:#FF6B5E;
+    --purple:#7D3C98;
+    --white:#FFFFFF;
+    --rule:rgba(51,58,64,.18);
+    --card:rgba(255,255,255,.55);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--cream);color:var(--ink);font-family:Figtree,"Helvetica Neue",Arial,sans-serif;font-size:17px;line-height:1.6}
+  a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(0,122,153,.35);word-break:break-word}
+  a:hover{color:var(--purple);border-bottom-color:var(--purple)}
+  h1,h2,h3{font-family:Poppins,Figtree,"Helvetica Neue",Arial,sans-serif;font-weight:500;line-height:1.2;margin:0}
+
+  .topbar{background:var(--teal);color:var(--white);padding:14px 0}
+  .topbar .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px}
+  .brand{font-family:Poppins,sans-serif;font-weight:600;letter-spacing:.14em;font-size:14px;text-transform:uppercase;color:var(--white)}
+  .topbar .tag{font-size:14px;font-weight:500;opacity:.9}
+
+  .hero{background:var(--coral);color:var(--white);padding:56px 0 48px}
+  .hero .kicker{font-size:13px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;opacity:.92;margin-bottom:14px}
+  .hero h1{font-size:40px;margin-bottom:10px}
+  .hero p{font-size:20px;font-weight:300;margin:0}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  main{padding:40px 0 24px}
+
+  section.block{padding:32px 0;border-bottom:1px solid var(--rule)}
+  section.block:last-of-type{border-bottom:none}
+  h2{font-size:30px;color:var(--ink);margin-bottom:18px}
+  h2 .num{display:inline-block;background:var(--purple);color:var(--white);font-size:13px;letter-spacing:.14em;padding:4px 10px;border-radius:4px;vertical-align:middle;margin-right:10px;font-family:Figtree,sans-serif;font-weight:600}
+  h3{font-size:22px;margin:30px 0 12px;color:var(--ink)}
+  h3 .rank{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--white);font-family:Figtree,sans-serif;font-weight:600;font-size:16px;margin-right:12px;vertical-align:middle}
+  p{margin:0 0 14px}
+  p.lead{font-size:19px;font-weight:500}
+  .label{font-weight:600;color:var(--purple)}
+  .due{color:var(--coral);font-weight:600}
+
+  .opp{background:var(--card);border-left:5px solid var(--teal);border-radius:0 10px 10px 0;padding:22px 26px 12px;margin:0 0 26px}
+  .opp.secondary{border-left-color:var(--purple)}
+  .opp .meta{display:grid;grid-template-columns:1fr;gap:6px;margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid var(--rule)}
+  .opp .meta div{margin:0}
+  ul{margin:0 0 14px;padding-left:22px}
+  li{margin:0 0 6px}
+
+  .tablewrap{overflow-x:auto;border-radius:10px;border:1px solid var(--rule);background:var(--white)}
+  table{border-collapse:collapse;width:100%;min-width:1100px;font-size:14.5px}
+  thead th{background:var(--teal);color:var(--white);text-align:left;padding:12px 12px;font-family:Poppins,sans-serif;font-weight:500;font-size:13px;letter-spacing:.04em;white-space:nowrap}
+  tbody td{padding:11px 12px;vertical-align:top;border-top:1px solid var(--rule)}
+  tbody tr:nth-child(even) td{background:rgba(245,230,218,.45)}
+  td.opp-name{font-weight:600;white-space:nowrap}
+
+  .note{font-size:15.5px;color:var(--ink);opacity:.9;margin-top:16px}
+  code{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:.92em;background:rgba(255,255,255,.7);padding:1px 6px;border-radius:4px}
+
+  .sources ul{list-style:none;padding:0}
+  .sources li{padding:8px 0;border-bottom:1px dashed var(--rule);font-size:15.5px}
+  .sources li:last-child{border-bottom:none}
+  .provenance{font-size:15px;background:var(--card);border-radius:10px;padding:18px 22px;margin-top:20px}
+
+  footer{background:var(--purple);color:var(--white);padding:34px 0;margin-top:40px}
+  footer .brand{color:var(--white)}
+  footer p{margin:6px 0 0;font-weight:300}
+  footer a{color:var(--white);border-bottom-color:rgba(255,255,255,.5)}
+  footer a:hover{color:var(--cream);border-bottom-color:var(--cream)}
+
+  @media (max-width:640px){
+    .hero h1{font-size:30px}
+    h2{font-size:24px}
+    .topbar .wrap{flex-direction:column;align-items:flex-start;gap:4px}
+    .opp{padding:18px 18px 8px}
+  }
+  @media print{
+    body{background:#fff}
+    .tablewrap{overflow:visible}
+    table{min-width:0;font-size:11px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="brand">Civic Operator</span>
+    <span class="tag">RHTP Alerts · Verified Intelligence</span>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="kicker">Prepared for Avocado Health</div>
+    <h1>Avocado RHTP Alerts</h1>
+    <p>Thursday, September 3, 2026</p>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+<section class="block" id="todays-read">
+  <h2>Today's Read</h2>
+  <p class="lead">Three opportunities carry substantive alignment with the Avocado Client Rubric, ranked below by strength of match. One additional item is credible but weaker.</p>
+  <p>The strongest is <strong>Idaho's School-Based Family Support Hubs solicitation</strong>, which funds physical hubs in eligible rural schools for services that may include child mental and behavioral health support, family therapy, parent education, and workshops. Applications are due <span class="due">September 8 — 5 days</span>. RFPs item 12890246703 is Verified as of September 3, 2026.</p>
+  <p>The second is <strong>Missouri RFI 0000000012SL</strong>, a state request for vendor input on virtual care expansion whose first track is <em>Remote Patient Monitoring for Maternal Care</em>. Responses are due <span class="due">September 9</span>. It was re-read on the Missouri Department of Social Services program page today and remains posted, with a named point of contact and a direct email route. It appears on no monday board and is source-verified only.</p>
+  <p>The third is the <strong>Kentucky first-tier subaward cohort</strong> — $20,426,889.00 obligated across 19 human-verified recipients, sixteen of them county or district health departments, with every action dated July 1, 2026. A separate $2,248,831.00 University of Kentucky Research Foundation record remains Awaiting Verification and is excluded.</p>
+</section>
+
+<section class="block" id="strongest">
+  <h2>Strongest Opportunity Matches</h2>
+
+  <article class="opp">
+    <h3 style="margin-top:0"><span class="rank">1</span>Idaho RHTP School-Based Family Support Hubs</h3>
+    <div class="meta">
+      <div><span class="label">Sponsoring organization.</span> Idaho Department of Health and Welfare.</div>
+      <div><span class="label">Geographic scope.</span> Eligible rural Idaho school districts.</div>
+      <div><span class="label">Status and dates.</span> Posted August 11, 2026. Applications due <span class="due">September 8, 2026</span>. RFPs item 12890246703 is Verified as of September 3, 2026.</div>
+    </div>
+    <p><span class="label">Why it matches.</span> The solicitation funds physical school-based family support hubs in rural communities underserved by outpatient mental and behavioral health clinics. Services made available through the hubs may include mental and behavioral health support, family therapy, parent education, and workshops. The category fit is direct, but the commercial route is indirect: eligible school districts are the applicants, and the solicitation permits partnerships and, at district discretion, subgrants to nonprofit or community-based organizations.</p>
+    <p><span class="label">Sources.</span></p>
+    <ul>
+      <li><a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health">https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health</a></li>
+      <li><a href="https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?dbid=0&amp;id=37264&amp;repo=PUBLIC-DOCUMENTS">https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?dbid=0&amp;id=37264&amp;repo=PUBLIC-DOCUMENTS</a></li>
+    </ul>
+    <p><span class="label">Contacts.</span> <a href="mailto:IdahoRHTP@dhw.idaho.gov">IdahoRHTP@dhw.idaho.gov</a>, published by Idaho DHW for RHTP questions. No named individual is published.</p>
+  </article>
+
+  <article class="opp">
+    <h3 style="margin-top:0"><span class="rank">2</span>Missouri RHTP Request for Information — Virtual Care Expansion</h3>
+    <div class="meta">
+      <div><span class="label">Sponsoring organization.</span> Missouri Department of Social Services, Rural Health Transformation Office.</div>
+      <div><span class="label">Geographic scope.</span> Rural Missouri, statewide.</div>
+      <div><span class="label">Status and dates.</span> Posted and open as of a read of the state program page on September 3, 2026. Responses due <span class="due">September 9, 2026</span>. No time of day or timezone is published on the state page.</div>
+    </div>
+    <p><span class="label">Why it matches.</span> The RFI is organized around two tracks, the first titled <em>Remote Patient Monitoring for Maternal Care</em> and the second <em>Telehealth Specialist Access for Rural Hospitals and Providers</em>. The state is soliciting vendor input before it has specified a model: the page states the RFI "seeks input from vendors to help shape two distinct tracks," and asks respondents to address available system capabilities, integration with existing systems, technical and security requirements, implementation approaches, pricing, and ongoing support. Respondents may answer one track or file separately for both.</p>
+    <p><span class="label">Source.</span> <a href="https://dss.mo.gov/mhd/rural-health">https://dss.mo.gov/mhd/rural-health</a></p>
+    <p><span class="label">Contacts.</span> Steven Hoffman (<a href="mailto:Steven.Hoffman@dss.mo.gov">Steven.Hoffman@dss.mo.gov</a>), named RFI point of contact, no title published; <a href="mailto:DSS.RHTP@dss.mo.gov">DSS.RHTP@dss.mo.gov</a>, general program inbox. Both in the contact table below.</p>
+  </article>
+
+  <article class="opp">
+    <h3 style="margin-top:0"><span class="rank">3</span>Kentucky RHTP First-Tier Subaward Cohort</h3>
+    <div class="meta">
+      <div><span class="label">Sponsoring organization.</span> Kentucky Cabinet for Health and Family Services.</div>
+      <div><span class="label">Geographic scope.</span> Statewide Kentucky; sixteen of the 19 human-verified recipients are county or district health departments.</div>
+      <div><span class="label">Status and dates.</span> Nineteen Verified first-tier subaward obligations, every action dated July 1, 2026.</div>
+    </div>
+    <p><span class="label">Why it matches.</span> Local health departments are a named buyer type in the rubric's operating notes. Kentucky's Rural Health Transformation Plan separately identifies <em>PoWERing Maternal and Infant Health</em>, which expands prenatal and postpartum access through telehealth-enabled maternal care teams and reports that one in six Kentucky women of childbearing age lives in a maternity care desert. Sixteen of the 19 verified first-tier subaward recipients are county or district health departments. The subaward records do not assign those recipients to PoWER or any other named initiative, so the cohort supports buyer fit but not a verified maternal-program linkage.</p>
+    <p><span class="label">Sources.</span></p>
+    <ul>
+      <li><a href="https://www.usaspending.gov/award/ASST_NON_RHTCMS332079_075/">https://www.usaspending.gov/award/ASST_NON_RHTCMS332079_075/</a></li>
+      <li><a href="https://ruralhealthplan.ky.gov/Pages/index.aspx">https://ruralhealthplan.ky.gov/Pages/index.aspx</a></li>
+      <li><a href="https://ruralhealthplan.ky.gov/Pages/Request_For_Applications.aspx">https://ruralhealthplan.ky.gov/Pages/Request_For_Applications.aspx</a></li>
+      <li><a href="https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf">https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf</a></li>
+      <li><a href="https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-170">https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-170</a></li>
+    </ul>
+    <p><span class="label">Contacts.</span> <a href="mailto:ruralhealthplan@ky.gov">ruralhealthplan@ky.gov</a>, the Rural Health Transformation Team inbox, is the only contact the state publishes for the program — no telephone number and no named individual. <a href="mailto:ashleyn.gibson@ky.gov">ashleyn.gibson@ky.gov</a> is printed in the separate Community Health Worker RFA, closed August 5, 2026, as that RFA's submission contact, with no title; it is not a contact for the general subaward cohort. No verified contact is published for any individual county or district health department recipient; those are below the cut line.</p>
+  </article>
+</section>
+
+<section class="block" id="additional">
+  <h2>Additional Relevant Matches</h2>
+
+  <article class="opp secondary">
+    <h3 style="margin-top:0">Idaho RHTP Healthcare Infrastructure Support (RHTPHIS1)</h3>
+    <div class="meta">
+      <div><span class="label">Sponsoring organization.</span> Idaho Department of Health and Welfare.</div>
+      <div><span class="label">Geographic scope.</span> Rural Idaho, statewide.</div>
+      <div><span class="label">Status and dates.</span> Posted August 18, 2026. Applications due <span class="due">September 13, 2026 at 11:59 p.m. MDT — 10 days</span>. Listed as currently posted on the DHW funding opportunities page as read on September 3, 2026.</div>
+    </div>
+    <p><span class="label">Sources.</span></p>
+    <ul>
+      <li><a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health">https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health</a></li>
+      <li><a href="https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?id=37354&amp;dbid=0&amp;repo=PUBLIC-DOCUMENTS">https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?id=37354&amp;dbid=0&amp;repo=PUBLIC-DOCUMENTS</a></li>
+    </ul>
+    <p><span class="label">Contacts.</span> <a href="mailto:IdahoRHTP@dhw.idaho.gov">IdahoRHTP@dhw.idaho.gov</a>, published on the DHW funding opportunities page as the contact for every posted Idaho RHTP opportunity. No named individual is published.</p>
+  </article>
+</section>
+
+<section class="block" id="contacts">
+  <h2>Contact Summary</h2>
+  <p>Rows with a linked source were read from that public page on September 3, 2026; where a page publishes no named individual, the cell says so rather than supplying one. Rows marked <strong>Not published</strong> carry no public source for the name, title, or address shown and should be confirmed before use.</p>
+  <div class="tablewrap">
+  <table>
+    <thead>
+      <tr><th>Opportunity</th><th>Contact</th><th>Title</th><th>Organization</th><th>Email</th><th>Phone</th><th>Source</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="opp-name">Idaho School-Based Family Support Hubs</td><td>No named individual published</td><td>Program inbox</td><td>Idaho Dept. of Health and Welfare, RHTP</td><td><a href="mailto:IdahoRHTP@dhw.idaho.gov">IdahoRHTP@dhw.idaho.gov</a></td><td>None published</td><td><a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health">healthandwelfare.idaho.gov/…/funding-opportunities-rural-health</a></td></tr>
+      <tr><td class="opp-name">Idaho School-Based Family Support Hubs / RHTPHIS1</td><td>Amy Hirtle</td><td>Director, State Office of Rural Health; Bureau of Rural Health and Community Support</td><td>Idaho Dept. of Health and Welfare</td><td><a href="mailto:amy.hirtle@dhw.idaho.gov">amy.hirtle@dhw.idaho.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho School-Based Family Support Hubs / RHTPHIS1</td><td>Juliet Charron</td><td>Director</td><td>Idaho Dept. of Health and Welfare</td><td><a href="mailto:juliet.charron@dhw.idaho.gov">juliet.charron@dhw.idaho.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho School-Based Family Support Hubs / RHTPHIS1</td><td>Alex Prado</td><td>Primary Care Office Manager; RHTP Point of Contact</td><td>Idaho Dept. of Health and Welfare</td><td>None on record</td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>Steven Hoffman</td><td>No title published</td><td>Missouri Dept. of Social Services, Rural Health Transformation Office</td><td><a href="mailto:Steven.Hoffman@dss.mo.gov">Steven.Hoffman@dss.mo.gov</a></td><td>None published</td><td><a href="https://dss.mo.gov/mhd/rural-health">dss.mo.gov/mhd/rural-health</a></td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>No named individual published</td><td>Program inbox</td><td>Missouri DSS Rural Health Transformation Office</td><td><a href="mailto:DSS.RHTP@dss.mo.gov">DSS.RHTP@dss.mo.gov</a></td><td>None published</td><td><a href="https://dss.mo.gov/mhd/rural-health">dss.mo.gov/mhd/rural-health</a></td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>Joe Miller</td><td>Director, Rural Health Transformation Office</td><td>Missouri DSS Rural Health Transformation Office</td><td><a href="mailto:joe.miller@mo.gov">joe.miller@mo.gov</a> / <a href="mailto:joe.miller@dss.mo.gov">joe.miller@dss.mo.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>Jessica Bax</td><td>RHT Program</td><td>Missouri Dept. of Social Services</td><td><a href="mailto:jessica.bax@dss.mo.gov">jessica.bax@dss.mo.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>Baylee Watts</td><td>No title on record</td><td>Missouri Dept. of Social Services</td><td><a href="mailto:baylee.watts@dss.mo.gov">baylee.watts@dss.mo.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Missouri RFI 0000000012SL</td><td>Amy Raymo</td><td>Assistant Director, Division of Purchasing</td><td>Missouri Office of Administration</td><td><a href="mailto:amy.raymo@oa.mo.gov">amy.raymo@oa.mo.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>No named individual published</td><td>Program inbox</td><td>Kentucky Cabinet for Health and Family Services, Rural Health Transformation Team</td><td><a href="mailto:ruralhealthplan@ky.gov">ruralhealthplan@ky.gov</a></td><td>None published</td><td><a href="https://ruralhealthplan.ky.gov/Pages/index.aspx">ruralhealthplan.ky.gov/Pages/index.aspx</a></td></tr>
+      <tr><td class="opp-name">Kentucky Community Health Worker RFA — closed 2026-08-05</td><td>Ashleyn Gibson</td><td>No title published</td><td>Kentucky Cabinet for Health and Family Services</td><td><a href="mailto:ashleyn.gibson@ky.gov">ashleyn.gibson@ky.gov</a></td><td>None published</td><td><a href="https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf">chfs.ky.gov/…/RHT - Community Health Worker - RFA.pdf</a></td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Andrew Yunt</td><td>Deputy Commissioner, CHFS; Project Director and Authorized Official, RHTP award RHTCMS332079</td><td>Kentucky Cabinet for Health and Family Services</td><td><a href="mailto:andrew.yunt@ky.gov">andrew.yunt@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Tom Walton</td><td>Director, Rural Health Transformation Program</td><td>Kentucky Cabinet for Health and Family Services</td><td><a href="mailto:tom.walton@ky.gov">tom.walton@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Dr. Steven Stack</td><td>Secretary</td><td>Kentucky Cabinet for Health and Family Services</td><td><a href="mailto:steven.stack@ky.gov">steven.stack@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Robbie Hume</td><td>Crisis to Care Interim Lead</td><td>Kentucky Department for Public Health</td><td><a href="mailto:robbie.hume@ky.gov">robbie.hume@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Jimmie Hampton</td><td>Workforce Development Specialist, Crisis to Care</td><td>Kentucky Department for Public Health</td><td><a href="mailto:jimmie.hampton@ky.gov">jimmie.hampton@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Marsha Deaton</td><td>Program Lead, Rooted in Health</td><td>Kentucky Department for Public Health</td><td><a href="mailto:marsha.deaton@ky.gov">marsha.deaton@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Pam Stein</td><td>RHTP Dental Hygiene RFA point of contact</td><td>Kentucky Department for Public Health</td><td><a href="mailto:pam.stein@ky.gov">pam.stein@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>John Ard</td><td>Executive Director (office unconfirmed)</td><td>Commonwealth of Kentucky</td><td><a href="mailto:john.ard@ky.gov">john.ard@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort</td><td>Philip Heleringer</td><td>Executive Director (office unconfirmed)</td><td>Commonwealth of Kentucky</td><td><a href="mailto:philip.heleringer@ky.gov">philip.heleringer@ky.gov</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Kentucky subaward cohort — University of Louisville affiliate</td><td>Charles Sowards</td><td>Assistant Chief Executive Officer</td><td>UofL Health – Shelbyville Hospital</td><td><a href="mailto:charles.sowards@uoflhealth.org">charles.sowards@uoflhealth.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho RHTPHIS1</td><td>No named individual published</td><td>Program inbox</td><td>Idaho Dept. of Health and Welfare, RHTP</td><td><a href="mailto:IdahoRHTP@dhw.idaho.gov">IdahoRHTP@dhw.idaho.gov</a></td><td>None published</td><td><a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health">healthandwelfare.idaho.gov/…/funding-opportunities-rural-health</a></td></tr>
+      <tr><td class="opp-name">Idaho RHTPHIS1</td><td>Kyle Rooks</td><td>Government Affairs Director</td><td>Idaho Community Health Centers Association</td><td><a href="mailto:krooks@idahochc.org">krooks@idahochc.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho RHTPHIS1</td><td>Toni Lawson</td><td>VP of Government Relations</td><td>Idaho Hospital Association</td><td><a href="mailto:tlawson@teamiha.org">tlawson@teamiha.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho RHTPHIS1</td><td>Brian Whitlock</td><td>President and CEO</td><td>Idaho Hospital Association</td><td>None on record</td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">Idaho RHTPHIS1</td><td>Katrina Hoff</td><td>Director, Southwest Idaho AHEC</td><td>Jannus</td><td><a href="mailto:khoff@jannus.org">khoff@jannus.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 1–2</td><td>Mark Laney</td><td>CEO</td><td>Mosaic Life Care</td><td><a href="mailto:mark.laney@mymlc.com">mark.laney@mymlc.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 1–2</td><td>Karan Mohan</td><td>Chief Quality Officer</td><td>Mosaic Life Care</td><td><a href="mailto:karan.mohan@mymlc.com">karan.mohan@mymlc.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 3</td><td>Tina Gillespie</td><td>Chief Executive Officer</td><td>Harrison County Community Hospital</td><td><a href="mailto:tgillespie@hcchospital.org">tgillespie@hcchospital.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 3</td><td>Nikki Hendren</td><td>Chief Operating Officer</td><td>Harrison County Community Hospital</td><td><a href="mailto:nhendren@hcchospital.org">nhendren@hcchospital.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 5</td><td>Amanda Arnold</td><td>Chief Operating Officer</td><td>HCC Network</td><td><a href="mailto:amanda.arnold@hccnetwork.org">amanda.arnold@hccnetwork.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 12</td><td>Melissa Hunter</td><td>Chief Operating Officer / Chief Nursing Officer</td><td>Lake Regional Health System</td><td><a href="mailto:mhunter@lakeregional.com">mhunter@lakeregional.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 12</td><td>Jaren Pippitt</td><td>Chief Strategy Officer</td><td>Lake Regional Health System</td><td><a href="mailto:jpippitt@lakeregional.com">jpippitt@lakeregional.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 16</td><td>Gary Cloud</td><td>Vice President, Strategic Partnerships</td><td>A.T. Still University of Health Sciences – Kirksville</td><td><a href="mailto:gcloud@atsu.edu">gcloud@atsu.edu</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 18</td><td>Wendy Harrington</td><td>Vice President of Development</td><td>Hannibal Regional Health Center</td><td><a href="mailto:wendy.harrington@hannibalregional.org">wendy.harrington@hannibalregional.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 19</td><td>Brock Lough</td><td>Chief Executive Officer</td><td>Arthur Center Community Health</td><td><a href="mailto:blough@arthurcenter.com">blough@arthurcenter.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 19</td><td>Kristen Fishback</td><td>Deputy Director</td><td>Arthur Center Community Health</td><td><a href="mailto:kfishback@arthurcenter.com">kfishback@arthurcenter.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 19</td><td>Ilda Guambe</td><td>Grants and Informatics Coordinator</td><td>Arthur Center Community Health</td><td><a href="mailto:iguambe@arthurcenter.com">iguambe@arthurcenter.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 21</td><td>Cindi Engemann</td><td>Chief Financial Officer</td><td>Hermann Area District Hospital</td><td><a href="mailto:cengemann@hadh.org">cengemann@hadh.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 22</td><td>Jana Cook</td><td>Chief Operating Officer</td><td>Phelps Health</td><td><a href="mailto:cookj@phelpshealth.org">cookj@phelpshealth.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 24</td><td>Crystal Slayton</td><td>MCO Outreach Coordinator</td><td>Missouri Highlands Health Care</td><td><a href="mailto:cslayton@mohigh.org">cslayton@mohigh.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 25</td><td>Lisa Tolbert</td><td>Chief Operations Officer</td><td>Community Counseling Center</td><td><a href="mailto:ltolbert@cccntr.com">ltolbert@cccntr.com</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 26</td><td>Nadia Moreno</td><td>Program Director</td><td>FCC Behavioral Health</td><td><a href="mailto:nadia.moreno@fccinc.org">nadia.moreno@fccinc.org</a></td><td>None on record</td><td>Not published</td></tr>
+      <tr><td class="opp-name">MO Hub 26</td><td>Seth Roso</td><td>Chief Administrative Officer</td><td>FCC Behavioral Health</td><td><a href="mailto:sethr@fccinc.org">sethr@fccinc.org</a></td><td>None on record</td><td>Not published</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="note"><code>ruralhealth@health.mo.gov</code> is carried on internal records as Missouri's program contact and is <strong>excluded from this table on purpose</strong> — it appears on no Missouri state page reviewed today.</p>
+</section>
+
+<section class="block sources" id="sources">
+  <h2>Sources</h2>
+  <ul>
+    <li>Missouri Rural Health Transformation program page and RFI 0000000012SL notice: <a href="https://dss.mo.gov/mhd/rural-health">https://dss.mo.gov/mhd/rural-health</a></li>
+    <li>Kentucky RHTP prime award RHTCMS332079, first-tier subawards: <a href="https://www.usaspending.gov/award/ASST_NON_RHTCMS332079_075/">https://www.usaspending.gov/award/ASST_NON_RHTCMS332079_075/</a></li>
+    <li>Kentucky Rural Health Transformation Plan: <a href="https://ruralhealthplan.ky.gov/Pages/index.aspx">https://ruralhealthplan.ky.gov/Pages/index.aspx</a></li>
+    <li>Kentucky RHTP Requests for Applications: <a href="https://ruralhealthplan.ky.gov/Pages/Request_For_Applications.aspx">https://ruralhealthplan.ky.gov/Pages/Request_For_Applications.aspx</a></li>
+    <li>Kentucky Community Health Worker RFA: <a href="https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf">https://www.chfs.ky.gov/agencies/os/oas/Documents/RHT%20-%20Community%20Health%20Worker%20-%20RFA.pdf</a></li>
+    <li>2 CFR part 170, Appendix A (current eCFR): <a href="https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-170">https://www.ecfr.gov/current/title-2/subtitle-A/chapter-I/part-170</a></li>
+    <li>Idaho DHW RHTP funding opportunities: <a href="https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health">https://healthandwelfare.idaho.gov/providers/rural-health-transformation-program-grant/funding-opportunities-rural-health</a></li>
+    <li>Idaho School-Based Family Support Hubs solicitation folder: <a href="https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?dbid=0&amp;id=37264&amp;repo=PUBLIC-DOCUMENTS">https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?dbid=0&amp;id=37264&amp;repo=PUBLIC-DOCUMENTS</a></li>
+    <li>Idaho RHTPHIS1 solicitation packet: <a href="https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?id=37354&amp;dbid=0&amp;repo=PUBLIC-DOCUMENTS">https://publicdocuments.dhw.idaho.gov/WebLink/Browse.aspx?id=37354&amp;dbid=0&amp;repo=PUBLIC-DOCUMENTS</a></li>
+    <li>Nebraska RHTP prime award RHTCMS332086, first-tier subawards: <a href="https://www.usaspending.gov/award/ASST_NON_RHTCMS332086_075/?tab=sub_awards">https://www.usaspending.gov/award/ASST_NON_RHTCMS332086_075/?tab=sub_awards</a></li>
+  </ul>
+  <div class="provenance">
+    <p><strong>Provenance.</strong> Kentucky prime award RHTCMS332079, total obligation $212,905,590.56, base action date 2025-12-29, assistance listing 93.798, CMS NOFO CMS-RHT-26-001; nineteen Verified first-tier subawards, all action-dated 2026-07-01, totaling $20,426,889.00. One additional $2,248,831.00 University of Kentucky Research Foundation record remains Awaiting Verification and is excluded from the verified cohort. Nebraska prime award RHTCMS332086; the Jefferson Community Health Center subaward is action-dated 2026-07-21. Idaho federal award RHTCMS332084; Idaho Year 1 award $185,974,367.81. All state pages and federal award records were read on 2026-09-03.</p>
+    <p style="margin-bottom:0">Dates, addresses and dollar figures above are recorded from the source documents as read. States and pass-through entities move deadlines without notice — confirm every date directly with the issuing office before acting on it. The Missouri RFI page publishes a due date of September 9 with no time of day and no timezone, and the MissouriBUYS listing under bid number 0000000012SL was not opened during this review.</p>
+  </div>
+</section>
+
+</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand">Civic Operator</span>
+    <p>The machine finds. The operator vouches.</p>
+    <p><a href="mailto:danx@civicoperator.com">danx@civicoperator.com</a> · (773) 960-6045</p>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,50 @@
+# Verifies the dashboard still builds and its regression guards still pass.
+#
+# These four guards each protect a feature that has broken at least once, and
+# each failure silently swallowed a high-priority signal rather than throwing:
+# the covered-states toggle, cross-edition opportunity matching (which lost
+# Idaho's deadline extension), issuer-vs-applicant classification (which put
+# state agencies above the applicants they fund), and the email-pattern
+# conformance check. A silent regression here looks like a working dashboard
+# with quietly wrong answers, which is the worst failure mode this repo has.
+
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Regenerate the data payload
+        run: python data/real_data.py
+
+      - name: Build the dashboard and run regression guards
+        run: python scripts/build_dashboard.py
+
+      - name: Fail if dist/ is stale
+        run: |
+          if ! git diff --quiet -- dashboard/dist; then
+            echo "::error::dashboard/dist is out of date with its sources."
+            echo "Run ./scripts/install_hooks.sh so this rebuilds on commit,"
+            echo "or run python scripts/build_dashboard.py and commit the result."
+            git diff --stat -- dashboard/dist
+            exit 1
+          fi
+
+      - name: Check no secrets slipped in
+        run: |
+          if git ls-files | grep -qE '(^|/)\.env$|\.pem$|credentials\.json$'; then
+            echo "::error::A credential-shaped file is tracked. Remove it."
+            exit 1
+          fi
